@@ -352,6 +352,7 @@ clean-windows:: Makefile-windows
 	$(MAKE) -$(MFLAGS) clean
 	cd ..\..\..
 	@echo Making clean in root
+        $(RM) $(WCONFIG_EXE)
 
 #
 # Renames DOS 8.3 filenames back to their proper, longer names.
