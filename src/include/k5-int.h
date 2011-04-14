@@ -100,7 +100,8 @@
 #define KERBEROS_INI	"kerberos.ini"
 #define INI_FILES	"Files"
 #define INI_KRB_CCACHE	"krb5cc"	/* Location of the ccache */
-#define INI_KRB5_CONF	"krb5.ini"	/* Location of krb5.conf file */
+#define INI_KRB5_INI	"krb5.ini"	/* Name of krb5.ini profile file */
+#define INI_KRB5_CONF   "krb5.conf"     /* Name of krb5.conf profile file */
 #define ANSI_STDIO
 #endif
 

@@ -145,7 +145,8 @@ typedef _W64 int 	 ssize_t;
 #define   INI_KRB_CONF    "krb.conf"     /* Location of krb.conf file */
 #define   DEF_KRB_CONF    "krb.conf"      /* Default name for krb.conf file */
 #else
-#define INI_KRB5_CONF   "krb5.ini"	/* From k5-config.h */
+#define INI_KRB5_CONF   "krb5.conf"	/* From k5-config.h */
+#define OLD_KRB5_CONF   "krb5.ini"
 #define INI_KRB_CONF    INI_KRB5_CONF	/* Location of krb.conf file */
 #define DEF_KRB_CONF    INI_KRB5_CONF	/* Default name for krb.conf file */
 #define INI_TICKETOPTS  "TicketOptions" /* Ticket options */

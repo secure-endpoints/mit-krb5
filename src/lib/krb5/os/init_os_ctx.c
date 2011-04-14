@@ -38,24 +38,110 @@
 
 #if defined(_WIN32)
 #include <winsock.h>
+#include <shlobj.h>
+#include <shlwapi.h>
+
+#define KERBEROS_STR          "\\Kerberos\\"
+#define MIT_KERBEROS_STR      "\\MIT\\Kerberos\\"
+
+/*
+ * Check the implementation specific \ProgramData\MIT\Kerberos
+ * as well as the implementation independent \ProgramData\Kerberos.
+ * Return a profile string that includes both.
+ * This function always returns success even if the file cannot
+ * be opened.  This permits the default path to be set even if
+ * it does not yet exist.  This is equivalent to how get_from_windows_dir()
+ * behaved when it was the default location.
+ */
+
+#define PROF_COMMON_DEF 0
+#define PROF_COMMON_OLD 1
+#define PROF_MIT_DEF    2
+#define PROF_MIT_OLD    3
+
+static krb5_error_code
+get_from_program_data_dir(
+    char **pname
+    )
+{
+    char        szAppData[1024], *p;
+    char        *name = NULL;
+    size_t      dirlen, len;
+    int found[4] = {0, 0, 0, 0};
+    struct _stat s;
+
+
+    /*
+     * SHGetFolderPathA and PathAppend both take input buffers
+     * of at least MAX_PATH characters.
+     */
+    if (SUCCEEDED(SHGetFolderPathA( NULL,
+                                    CSIDL_COMMON_APPDATA | CSIDL_FLAG_CREATE,
+                                    NULL,
+                                    SHGFP_TYPE_CURRENT,
+                                    szAppData )))
+    {
+        dirlen = strlen(szAppData);
+        p = szAppData + dirlen;      /* keep a ptr to the end of the dirpath */
+
+        strncat(p, KERBEROS_STR  DEFAULT_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
+        found[PROF_COMMON_DEF] = !_stat(p, &s);
+        if (!found[PROF_COMMON_DEF]) {
+            strncat(p, KERBEROS_STR  OLD_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
+            found[PROF_COMMON_OLD] = !_stat(p, &s);
+        }
+
+        strncat(p, MIT_KERBEROS_STR  DEFAULT_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
+        found[PROF_MIT_DEF] = !_stat(p, &s);
+        if (!found[PROF_MIT_DEF]) {
+            strncat(p, MIT_KERBEROS_STR  OLD_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
+            found[PROF_MIT_OLD] = !_stat(p, &s);
+        }
+        *p = '\0';       /* restore the folder path */
+
+        len = 2 * (dirlen + max(strlen(KERBEROS_STR DEFAULT_PROFILE_FILENAME), strlen(KERBEROS_STR DEFAULT_PROFILE_FILENAME)) + 1);
+        name = (char *)malloc(len);
+        if (name) {
+            sprintf(name, "%s%s;%s%s",
+                     szAppData,
+                     found[PROF_COMMON_OLD] ? KERBEROS_STR OLD_PROFILE_FILENAME : KERBEROS_STR DEFAULT_PROFILE_FILENAME,
+                     szAppData,
+                     found[PROF_MIT_DEF] ? MIT_KERBEROS_STR DEFAULT_PROFILE_FILENAME : MIT_KERBEROS_STR OLD_PROFILE_FILENAME);
+            *pname = name;
+            return 0;
+        }
+    }
+
+    /* failure */
+    return KRB5_CONFIG_CANTOPEN;
+}
 
 static krb5_error_code
 get_from_windows_dir(
     char **pname
     )
 {
+    char * name = NULL;
     UINT size = GetWindowsDirectory(0, 0);
-    *pname = malloc(size + 1 +
+    int found = 0;
+    struct _stat s;
+
+    *pname = NULL;
+    name = malloc(size + 1 +
                     strlen(DEFAULT_PROFILE_FILENAME) + 1);
-    if (*pname)
+    if (name)
     {
-        GetWindowsDirectory(*pname, size);
-        strcat(*pname, "\\");
-        strcat(*pname, DEFAULT_PROFILE_FILENAME);
-        return 0;
-    } else {
-        return KRB5_CONFIG_CANTOPEN;
+        GetWindowsDirectory(name, size);
+        strcat(name, "\\");
+        strcat(name, DEFAULT_PROFILE_FILENAME);
+        found = !_stat(name, &s);
+        if (found) {
+            *pname = name;
+            return 0;
+        }
+        free(name);
     }
+    return KRB5_CONFIG_CANTOPEN;
 }
 
 static krb5_error_code
@@ -63,7 +149,7 @@ get_from_module_dir(
     char **pname
     )
 {
-    const DWORD size = 1024; /* fixed buffer */
+    const DWORD size = 1024; /* fixed buffer - max path is 256 */
     int found = 0;
     char *p;
     char *name;
@@ -86,6 +172,13 @@ get_from_module_dir(
     strncpy(p, DEFAULT_PROFILE_FILENAME, size - (p - name));
     name[size - 1] = 0;
     found = !_stat(name, &s);
+
+    if ( !found ) {
+        /* Try the old profile filename */
+        strncpy(p, OLD_PROFILE_FILENAME, size - (p - name));
+        name[size - 1] = 0;
+        found = !_stat(name, &s);
+    }
 
  cleanup:
     if (found)
@@ -207,27 +300,37 @@ os_get_default_config_files(profile_filespec_t **pfiles, krb5_boolean secure)
     {
         /* HKCU */
         retval = get_from_registry(&name, HKEY_CURRENT_USER);
-        if (retval) return retval;
+        if (retval && retval != KRB5_CONFIG_CANTOPEN)
+            return retval;
     }
     if (!name)
     {
         /* HKLM */
         retval = get_from_registry(&name, HKEY_LOCAL_MACHINE);
-        if (retval) return retval;
+        if (retval && retval != KRB5_CONFIG_CANTOPEN)
+            return retval;
     }
     if (!name && !secure)
     {
         /* module dir */
         retval = get_from_module_dir(&name);
-        if (retval) return retval;
+        if (retval && retval != KRB5_CONFIG_CANTOPEN)
+            return retval;
     }
     if (!name)
     {
-        /* windows dir */
+        /* windows dir - for compatibility (deprecated in 2000 and above) */
         retval = get_from_windows_dir(&name);
+        if (retval && retval != KRB5_CONFIG_CANTOPEN)
+            return retval;
     }
-    if (retval)
-        return retval;
+    if (!name)
+    {
+        /* program data dir */
+        retval = get_from_program_data_dir(&name);
+        if (retval && retval != KRB5_CONFIG_CANTOPEN)
+            return retval;
+    }
     if (!name)
         return KRB5_CONFIG_CANTOPEN; /* should never happen */
 

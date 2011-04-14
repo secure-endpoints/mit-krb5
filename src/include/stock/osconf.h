@@ -30,7 +30,9 @@
 #ifndef KRB5_OSCONF__
 #define KRB5_OSCONF__
 
-#if !defined(_WIN32)
+#if defined(_WIN32)
+#include <win-mac.h>
+#else
     /* Don't try to pull in autoconf.h for Windows, since it's not used */
 #ifndef KRB5_AUTOCONF__
 #define KRB5_AUTOCONF__
@@ -43,7 +45,8 @@
 #endif
 
 #if defined(_WIN32)
-#define DEFAULT_PROFILE_FILENAME "krb5.ini"
+#define DEFAULT_PROFILE_FILENAME INI_KRB5_CONF
+#define OLD_PROFILE_FILENAME OLD_KRB5_CONF
 #define	DEFAULT_LNAME_FILENAME	"/aname"
 #define	DEFAULT_KEYTAB_NAME	"FILE:%s\\krb5kt"
 #else /* !_WINDOWS */
