@@ -181,7 +181,7 @@ krb5_cc_resolve (krb5_context context, const char *name, krb5_ccache *cache)
     const krb5_cc_ops *ops;
 
     pfx = NULL;
-    cp = strchr (name, ':');
+    cp = name ? strchr (name, ':') : NULL;
     if (!cp) {
 	if (krb5_cc_dfl_ops)
 	    return (*krb5_cc_dfl_ops->resolve)(context, cache, name);
