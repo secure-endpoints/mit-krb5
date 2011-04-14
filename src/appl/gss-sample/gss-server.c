@@ -157,7 +157,7 @@ server_acquire_creds(service_name, server_creds)
  */
 static int
 server_establish_context(s, server_creds, context, client_name, ret_flags)
-    int     s;
+    SOCKET s;
     gss_cred_id_t server_creds;
     gss_ctx_id_t *context;
     gss_buffer_t client_name;
@@ -290,12 +290,12 @@ server_establish_context(s, server_creds, context, client_name, ret_flags)
  * A listening socket on the specified port and created and returned.
  * On error, an error message is displayed and -1 is returned.
  */
-static int
+static SOCKET
 create_socket(port)
     u_short port;
 {
     struct sockaddr_in saddr;
-    int     s;
+    SOCKET s;
     int     on = 1;
 
     saddr.sin_family = AF_INET;
@@ -310,12 +310,12 @@ create_socket(port)
     (void) setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof(on));
     if (bind(s, (struct sockaddr *) &saddr, sizeof(saddr)) < 0) {
 	perror("binding socket");
-	(void) close(s);
+	(void) closesocket(s);
 	return -1;
     }
     if (listen(s, 5) < 0) {
 	perror("listening on socket");
-	(void) close(s);
+	(void) closesocket(s);
 	return -1;
     }
     return s;
@@ -406,7 +406,7 @@ test_import_export_context(context)
  */
 static int
 sign_server(s, server_creds, export)
-    int     s;
+    SOCKET s;
     gss_cred_id_t server_creds;
     int     export;
 {
@@ -613,7 +613,7 @@ DecrementAndSignalThreadCounter(void)
 
 struct _work_plan
 {
-    int     s;
+    SOCKET  s;
     gss_cred_id_t server_creds;
     int     export;
 };
@@ -648,6 +648,10 @@ main(argc, argv)
     int     once = 0;
     int     do_inetd = 0;
     int     export = 0;
+#ifdef _WIN32
+    WORD version_requested;
+    WSADATA wsadata;
+#endif
 
     logfile = stdout;
     display_file = stdout;
@@ -709,6 +713,13 @@ main(argc, argv)
 	usage();
 
 #ifdef _WIN32
+    version_requested = MAKEWORD(1, 1);
+    if (WSAStartup(version_requested, &wsadata) != 0)
+    {
+        fprintf(stderr, "error: winsock initialization failure\n");
+        exit(1);
+    }
+
     if (max_threads < 1) {
 	fprintf(stderr, "warning: there must be at least one thread\n");
 	max_threads = 1;
@@ -787,6 +798,7 @@ main(argc, argv)
 
 #ifdef _WIN32
     CleanupHandles();
+    WSACleanup();
 #endif
 
     return 0;

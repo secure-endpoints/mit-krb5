@@ -196,7 +196,7 @@ char *
 hookup(char* host, int port)
 {
 	register struct hostent *hp = 0;
-	int s;
+	SOCKET s;
 	socklen_t len;
 #ifdef IP_TOS
 #ifdef IPTOS_LOWDELAY
@@ -1564,7 +1564,7 @@ bad:
 FILE *
 dataconn(char *lmode)
 {
-	int s;
+	SOCKET s;
 	socklen_t fromlen = sizeof (hisdataaddr);
 #ifdef IP_TOS
 #ifdef IPTOS_LOWDELAY

@@ -99,14 +99,14 @@ usage()
  * opened and connected.  If an error occurs, an error message is
  * displayed and -1 is returned.
  */
-static int
+static SOCKET
 connect_to_server(host, port)
     char   *host;
     u_short port;
 {
     struct sockaddr_in saddr;
     struct hostent *hp;
-    int     s;
+    SOCKET s;
 
     if ((hp = gethostbyname(host)) == NULL) {
 	fprintf(stderr, "Unknown host: %s\n", host);
@@ -123,7 +123,7 @@ connect_to_server(host, port)
     }
     if (connect(s, (struct sockaddr *) &saddr, sizeof(saddr)) < 0) {
 	perror("connecting to server");
-	(void) close(s);
+	(void) closesocket(s);
 	return -1;
     }
     return s;
@@ -163,7 +163,7 @@ connect_to_server(host, port)
 static int
 client_establish_context(s, service_name, gss_flags, auth_flag,
 			 v1_format, oid, gss_context, ret_flags)
-    int     s;
+    SOCKET s;
     char   *service_name;
     gss_OID oid;
     OM_uint32 gss_flags;
@@ -362,7 +362,8 @@ call_server(host, port, oid, service_name, gss_flags, auth_flag,
 {
     gss_ctx_id_t context;
     gss_buffer_desc in_buf, out_buf;
-    int     s, state;
+    SOCKET s;
+    int state;
     OM_uint32 ret_flags;
     OM_uint32 maj_stat, min_stat;
     gss_name_t src_name, targ_name;
@@ -385,7 +386,7 @@ call_server(host, port, oid, service_name, gss_flags, auth_flag,
     /* Establish context */
     if (client_establish_context(s, service_name, gss_flags, auth_flag,
 				 v1_format, oid, &context, &ret_flags) < 0) {
-	(void) close(s);
+	(void) closesocket(s);
 	return -1;
     }
 
@@ -483,7 +484,7 @@ call_server(host, port, oid, service_name, gss_flags, auth_flag,
 			 &in_buf, &state, &out_buf);
 	    if (maj_stat != GSS_S_COMPLETE) {
 		display_status("wrapping message", maj_stat, min_stat);
-		(void) close(s);
+		(void) closesocket(s);
 		(void) gss_delete_sec_context(&min_stat, &context,
 					      GSS_C_NO_BUFFER);
 		return -1;
@@ -501,7 +502,7 @@ call_server(host, port, oid, service_name, gss_flags, auth_flag,
 			      (encrypt_flag ? TOKEN_ENCRYPTED : 0) |
 			      (mic_flag ? TOKEN_SEND_MIC : 0))),
 		       &out_buf) < 0) {
-	    (void) close(s);
+	    (void) closesocket(s);
 	    (void) gss_delete_sec_context(&min_stat, &context,
 					  GSS_C_NO_BUFFER);
 	    return -1;
@@ -511,7 +512,7 @@ call_server(host, port, oid, service_name, gss_flags, auth_flag,
 
 	/* Read signature block into out_buf */
 	if (recv_token(s, &token_flags, &out_buf) < 0) {
-	    (void) close(s);
+	    (void) closesocket(s);
 	    (void) gss_delete_sec_context(&min_stat, &context,
 					  GSS_C_NO_BUFFER);
 	    return -1;
@@ -523,7 +524,7 @@ call_server(host, port, oid, service_name, gss_flags, auth_flag,
 				      &out_buf, &qop_state);
 	    if (maj_stat != GSS_S_COMPLETE) {
 		display_status("verifying signature", maj_stat, min_stat);
-		(void) close(s);
+		(void) closesocket(s);
 		(void) gss_delete_sec_context(&min_stat, &context,
 					      GSS_C_NO_BUFFER);
 		return -1;
@@ -551,7 +552,7 @@ call_server(host, port, oid, service_name, gss_flags, auth_flag,
 	maj_stat = gss_delete_sec_context(&min_stat, &context, &out_buf);
 	if (maj_stat != GSS_S_COMPLETE) {
 	    display_status("deleting context", maj_stat, min_stat);
-	    (void) close(s);
+	    (void) closesocket(s);
 	    (void) gss_delete_sec_context(&min_stat, &context,
 					  GSS_C_NO_BUFFER);
 	    return -1;
@@ -560,7 +561,7 @@ call_server(host, port, oid, service_name, gss_flags, auth_flag,
 	(void) gss_release_buffer(&min_stat, &out_buf);
     }
 
-    (void) close(s);
+    (void) closesocket(s);
     return 0;
 }
 
@@ -684,6 +685,10 @@ main(argc, argv)
     char  **argv;
 {
     int     i;
+#ifdef _WIN32
+    WORD version_requested;
+    WSADATA wsadata;
+#endif
 
     display_file = stdout;
     auth_flag = wrap_flag = encrypt_flag = mic_flag = 1;
@@ -766,6 +771,12 @@ main(argc, argv)
 	fprintf(stderr, "warning: there must be at least one thread\n");
 	max_threads = 1;
     }
+    version_requested = MAKEWORD(1, 1);
+    if (WSAStartup(version_requested, &wsadata) != 0)
+    {
+        fprintf(stderr, "error: winsock initialization failure\n");
+        exit(1);
+    }
 #endif
 
     server_host = *argv++;
@@ -802,6 +813,7 @@ main(argc, argv)
 
 #ifdef _WIN32
     CleanupHandles();
+    WSACleanup();
 #endif
 
     return 0;
