@@ -68,6 +68,15 @@ install-unix:: install-libs
 
 clean-unix:: clean-liblinks clean-libs clean-libobjs
 
+clean::
+	$(RM) $(OUTPRE)threads.$(OBJEXT) \
+	$(OUTPRE)init-addrinfo.$(OBJEXT) \
+	$(OUTPRE)plugins.$(OBJEXT) \
+	$(OUTPRE)errors.$(OBJEXT) \
+	$(OUTPRE)gmt_mktime.$(OBJEXT) \
+	$(OUTPRE)fake-addrinfo.$(OBJEXT)
+
+
 ##DOS##!if 0
 $(BUILDTOP)/include/autoconf.h: $(SRCTOP)/include/autoconf.h.in
 	(cd $(BUILDTOP)/include; $(MAKE) autoconf.h)

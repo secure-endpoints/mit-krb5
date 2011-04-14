@@ -49,6 +49,9 @@ clean-windows::
 	@echo Making clean in util\windows
 	cd windows
 	$(MAKE) -$(MFLAGS) clean
+	@echo Making in util\support
+	cd ..\support
+	$(MAKE) -$(MFLAGS) clean
 	@echo Making clean in util\et
 	cd ..\et
 	$(MAKE) -$(MFLAGS) clean
