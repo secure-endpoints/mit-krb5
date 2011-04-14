@@ -2347,7 +2347,7 @@ k5_msg_cred_dialog(khm_int32 msg_type,
                 if(g_fjob.code != 0) {
                     wchar_t tbuf[1024];
                     DWORD suggestion = 0;
-                    kherr_suggestion suggest_code;
+                    kherr_suggestion suggest_code = 0;
 
                     if (g_fjob.error_message) {
                         StringCbCopy(tbuf, sizeof(tbuf), g_fjob.error_message);
