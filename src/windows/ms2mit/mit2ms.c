@@ -85,7 +85,7 @@ main(
     else
         code = krb5_cc_default(kcontext, &ccache);
     if (code) {
-        com_err(argv[0], code, "while getting default ccache");
+        com_err(argv[0], code, "while getting %s ccache", ccachestr ? ccachestr : "default");
         krb5_free_principal(kcontext, princ);
         krb5_free_context(kcontext);
         exit(1);
@@ -93,7 +93,7 @@ main(
 
     /* Enumerate tickets from cache looking for an initial ticket */
     if ((code = krb5_cc_start_seq_get(kcontext, ccache, &cursor))) {
-        com_err(argv[0], code, "while initiating the cred sequence of MS LSA ccache");
+        com_err(argv[0], code, "while initiating the cred sequence of MIT ccache");
         krb5_cc_close(kcontext, ccache);
         krb5_free_context(kcontext);
         exit(1);
@@ -111,8 +111,8 @@ main(
     krb5_cc_end_seq_get(kcontext, ccache, &cursor);
 
     if ( !initial_ticket ) {
-        fprintf(stderr, "%s: Initial Ticket Getting Tickets are not available from the MIT default cache\n",
-                argv[0]);
+        fprintf(stderr, "%s: Initial Ticket Getting Tickets are not available from %s\n",
+                argv[0], ccachestr ? ccachestr : "the default MIT ccache");
         krb5_cc_close(kcontext, ccache);
         krb5_free_context(kcontext);
         exit(1);
@@ -133,7 +133,8 @@ main(
     }
 
     if (code = krb5_cc_copy_creds(kcontext, ccache, mslsa_ccache)) {
-        com_err (argv[0], code, "while copying default MIT ccache to MSLSA ccache");
+        com_err (argv[0], code, "while copying contents of %s to MSLSA ccache",
+                 ccachestr ? ccachestr : "the default MIT ccache");
         krb5_free_principal(kcontext, princ);
         krb5_cc_close(kcontext, ccache);
         krb5_cc_close(kcontext, mslsa_ccache);
