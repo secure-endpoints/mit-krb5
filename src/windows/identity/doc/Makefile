@@ -63,8 +63,10 @@ IMAGE_PATH = "$(SRC)\doc\images"
 INCLUDE_PATH = "$(INCDIR)" "$(SRC)\include"
 
 CHM_FILE = "$(DOCDIR)\netiddev.chm"
+
+HHC_LOCATION = "$(HHC)"
 <<
-	-$(HHC) $(DOCDIR)\html\index.hhp
+#	-$(HHC) $(DOCDIR)\html\index.hhp
 
 clean::
 	if exist "$(DOCDIR)/html" $(RMDIR) /s /q "$(DOCDIR)\html"
