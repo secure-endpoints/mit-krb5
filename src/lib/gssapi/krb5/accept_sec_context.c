@@ -680,6 +680,7 @@ krb5_gss_accept_sec_context(minor_status, context_handle,
    ctx->proto = 0;
    switch(ctx->subkey->enctype) {
    case ENCTYPE_DES_CBC_MD5:
+   case ENCTYPE_DES_CBC_MD4:
    case ENCTYPE_DES_CBC_CRC:
        ctx->subkey->enctype = ENCTYPE_DES_CBC_RAW;
        ctx->signalg = SGN_ALG_DES_MAC_MD5;
