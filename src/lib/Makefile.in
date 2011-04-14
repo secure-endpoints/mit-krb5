@@ -133,6 +133,29 @@ clean-windows::
 ##WIN32##	  $(K4LIBS) $(K4GLUE) $(K4RES) $(KLIB) $(CLIB) $(PLIB) $(WINLIBS) $(SCLIB)
 ##WIN32##  	$(_VC_MANIFEST_EMBED_DLL)
 
+##WIN32### Cygwin archives
+##WIN32##!ifndef NOCYGWIN
+##WIN32##SARCH=$(SLIB:.lib=.a)
+##WIN32##CARCH=$(CLIB:.lib=.a)
+##WIN32##PARCH=$(PLIB:.lib=.a)
+##WIN32##KARCH=$(KLIB:.lib=.a)
+##WIN32##GARCH=$(GLIB:.lib=.a)
+##WIN32##K4ARCH=$(K4LIB:.lib=.a)
+##WIN32##$(SARCH): $(SLIB)
+##WIN32##	$(_MAKE_CYGWIN_ARCH) --output-lib $@ --dllname $(@B).dll --input-def $(SDEF)
+##WIN32##$(CARCH): $(CLIB)
+##WIN32##	$(_MAKE_CYGWIN_ARCH) --output-lib $@ --dllname $(@B).dll --input-def $(CDEF)
+##WIN32##$(PARCH): $(SLIB)
+##WIN32##	$(_MAKE_CYGWIN_ARCH) --output-lib $@ --dllname $(@B).dll --input-def $(PDEF)
+##WIN32##$(KARCH): $(SLIB)
+##WIN32##	$(_MAKE_CYGWIN_ARCH) --output-lib $@ --dllname $(@B).dll --input-def $(KDEF)
+##WIN32##$(GARCH): $(SLIB)
+##WIN32##	$(_MAKE_CYGWIN_ARCH) --output-lib $@ --dllname $(@B).dll --input-def $(GDEF)
+##WIN32##$(K4ARCH): $(SLIB)
+##WIN32##	$(_MAKE_CYGWIN_ARCH) --output-lib $@ --dllname $(@B).dll --input-def $(K4DEF)
+##WIN32##all-windows:: $(SARCH) $(CARCH) $(PARCH) $(KARCH) $(GARCH) $(K4ARCH)
+##WIN32##!endif
+
 ##WIN32##$(K5_GLUE): win_glue.c
 ##WIN32##	$(CC) $(ALL_CFLAGS) $(MITFLAGS) /c /DKRB5=1 /Fo$@ $**
 ##WIN32##$(K4_GLUE): win_glue.c

@@ -151,6 +151,13 @@ _VC_MANIFEST_EMBED_EXE = if exist $*.exe.manifest mt.exe -manifest $*.exe.manife
 _VC_MANIFEST_EMBED_DLL = if exist $*.dll.manifest mt.exe -manifest $*.dll.manifest -outputresource:$*.dll;2
 !endif 
 
+# Cygwin archive creation
+# Invocation should specify --output-lib, --dllname and --input-def arguments.
+_MAKE_CYGWIN_ARCH = \
+    for %%C in (as.exe) do \
+    if exist %%~$$PATH:C \
+    dlltool --temp-prefix $(OUTPRE) -S %%~$$PATH:C
+
 # /ZI gives better debug info in each object file (MSVC 6.0 or higher).
 # /Zi gives debug info in each object file.
 # /Gs Avoid stack probes (they don't seem to work anyway)
