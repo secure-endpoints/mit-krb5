@@ -792,6 +792,7 @@ krb5int_locate_server (krb5_context context, const krb5_data *realm,
 		       int socktype, int family)
 {
     krb5_error_code code;
+    krb5_boolean tried_dns = 0;
     struct addrlist al = ADDRLIST_INIT;
 
     *addrlist = al;
@@ -810,6 +811,7 @@ krb5int_locate_server (krb5_context context, const krb5_data *realm,
 #ifdef KRB5_DNS_LOOKUP
 	if (code) {		/* Try DNS for all profile errors?  */
 	    krb5_error_code code2;
+            tried_dns = 1;
 	    code2 = dns_locate_server(context, realm, &al, svc, socktype,
 				      family);
 	    if (code2 != KRB5_PLUGIN_NO_HANDLE)
@@ -835,9 +837,9 @@ krb5int_locate_server (krb5_context context, const krb5_data *realm,
 	if (al.space)
 	    free_list (&al);
 	krb5_set_error_message(context, KRB5_REALM_CANT_RESOLVE,
-			       "Cannot resolve network address for KDC in realm %.*s",
-			       realm->length, realm->data);
-			       
+			       "Cannot resolve network address for KDC in realm %.*s%s",
+			       realm->length, realm->data, tried_dns ? " using DNS" : "");
+
 	return KRB5_REALM_CANT_RESOLVE;
     }
     *addrlist = al;
