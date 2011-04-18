@@ -61,15 +61,16 @@
 
 static krb5_error_code
 get_from_program_data_dir(
-    char **pname
+    char **pname,
+    char **pname2
     )
 {
     char        szAppData[1024], *p;
-    char        *name = NULL;
-    size_t      dirlen, len;
+    char        *name = NULL, *name2;
+    size_t      dirlen;
     int found[4] = {0, 0, 0, 0};
     struct _stat s;
-
+    krb5_error_code err = KRB5_CONFIG_CANTOPEN;
 
     /*
      * SHGetFolderPathA and PathAppend both take input buffers
@@ -84,36 +85,47 @@ get_from_program_data_dir(
         dirlen = strlen(szAppData);
         p = szAppData + dirlen;      /* keep a ptr to the end of the dirpath */
 
-        strncat(p, KERBEROS_STR  DEFAULT_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
+        /* construct the common profile path - default to DEFAULT_PROFILE_FILENAME */
+        strncpy(p, KERBEROS_STR  DEFAULT_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
         found[PROF_COMMON_DEF] = !_stat(p, &s);
         if (!found[PROF_COMMON_DEF]) {
-            strncat(p, KERBEROS_STR  OLD_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
+            strncpy(p, KERBEROS_STR  OLD_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
             found[PROF_COMMON_OLD] = !_stat(p, &s);
+            if (!found[PROF_COMMON_OLD])
+                strncpy(p, KERBEROS_STR  DEFAULT_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
+        }
+        name = _strdup(szAppData);
+        if (!name) {
+            err = ENOMEM;
+            goto fail;
         }
 
-        strncat(p, MIT_KERBEROS_STR  DEFAULT_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
+        /* construct the mit profile path - default to OLD_PROFILE_FILENAME */
+        strncpy(p, MIT_KERBEROS_STR  DEFAULT_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
         found[PROF_MIT_DEF] = !_stat(p, &s);
         if (!found[PROF_MIT_DEF]) {
-            strncat(p, MIT_KERBEROS_STR  OLD_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
+            strncpy(p, MIT_KERBEROS_STR  OLD_PROFILE_FILENAME, sizeof(szAppData) - dirlen);
             found[PROF_MIT_OLD] = !_stat(p, &s);
         }
-        *p = '\0';       /* restore the folder path */
-
-        len = 2 * (dirlen + max(strlen(KERBEROS_STR DEFAULT_PROFILE_FILENAME), strlen(KERBEROS_STR DEFAULT_PROFILE_FILENAME)) + 1);
-        name = (char *)malloc(len);
-        if (name) {
-            sprintf(name, "%s%s;%s%s",
-                     szAppData,
-                     found[PROF_COMMON_OLD] ? KERBEROS_STR OLD_PROFILE_FILENAME : KERBEROS_STR DEFAULT_PROFILE_FILENAME,
-                     szAppData,
-                     found[PROF_MIT_DEF] ? MIT_KERBEROS_STR DEFAULT_PROFILE_FILENAME : MIT_KERBEROS_STR OLD_PROFILE_FILENAME);
-            *pname = name;
-            return 0;
+        name2 = _strdup(szAppData);
+        if (!name2) {
+            err = ENOMEM;
+            goto fail;
         }
     }
 
-    /* failure */
-    return KRB5_CONFIG_CANTOPEN;
+    if (name || name2) {
+        *pname = name;
+        *pname2 = name2;
+        return 0;
+    }
+
+  fail:    /* failure */
+    if (name)
+        free(name);
+    if (name2)
+        free(name2);
+    return err;
 }
 
 static krb5_error_code
@@ -284,16 +296,17 @@ os_get_default_config_files(profile_filespec_t **pfiles, krb5_boolean secure)
     profile_filespec_t* files;
 #if defined(_WIN32)
     krb5_error_code retval = 0;
-    char *name = 0;
+    char *name = 0, *name2 = 0, *p;
+    int i = 0;
 
     if (!secure)
     {
         char *env = getenv("KRB5_CONFIG");
         if (env)
         {
-            name = malloc(strlen(env) + 1);
-            if (!name) return ENOMEM;
-            strcpy(name, env);
+            name = _strdup(env);
+            if (!name)
+                return ENOMEM;
         }
     }
     if (!name && !secure)
@@ -327,16 +340,36 @@ os_get_default_config_files(profile_filespec_t **pfiles, krb5_boolean secure)
     if (!name)
     {
         /* program data dir */
-        retval = get_from_program_data_dir(&name);
+        retval = get_from_program_data_dir(&name, &name2);
         if (retval && retval != KRB5_CONFIG_CANTOPEN)
             return retval;
     }
-    if (!name)
+    if (!name && !name2)
         return KRB5_CONFIG_CANTOPEN; /* should never happen */
 
-    files = malloc(2 * sizeof(char *));
-    files[0] = name;
-    files[1] = 0;
+    /* Determine how many files are in the list */
+    for ( i=1, p=name; p != NULL && (p=strchr(p,';')); i++)
+        p++;
+    if (name2)
+        i++;
+    files = malloc((i+1) * sizeof(char *));
+    if (!files)
+        return ENOMEM;
+
+    /* Setup the file list */
+    i = 0;
+    if (name) {
+        for ( ; p=strchr(name, ';'); i++)
+        {
+            *p = '\0';
+            files[i] = (i == 0 ? name : _strdup(name));
+            name = p + 1;
+        }
+        files[i] = (i == 0 ? name : _strdup(name));
+    }
+    if (name2)
+        files[i++] = name2;
+    files[i] = NULL;
 #else /* !_WIN32 */
     char* filepath = 0;
     int n_entries, i;
