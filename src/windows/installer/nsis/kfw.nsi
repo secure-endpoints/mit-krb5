@@ -1,6 +1,6 @@
 ;KfW Install Script for NSIS
 ;
-; Written by Jeffrey Altman <jaltman@mit.edu>
+; Written by Jeffrey Altman <jaltman@secure-endpoints.com>
 ; based on the OpenAFS installer written by Rob Murawski <rsm4@ieee.org>
 ;
 ;Based on:
