@@ -22,6 +22,12 @@ OBJFILE=$(OUTPATH)\kfw.wixobj
 
 MSIFILE=$(OUTPATH)\kfw.msi
 
+!IF ("$(CPU)" == "i386")
+WOW64_OBJFILE=$(OUTPATH)\kfw_wow64.wixobj
+
+WOW64_MSIFILE=$(OUTPATH)\kfw_wow64.msi
+!ENDIF
+
 WIXINCLUDES= \
 	config.wxi \
 	features.wxi \
@@ -34,7 +40,7 @@ WIXINCLUDES= \
 
 CUSTOMDLL=custom\custom.dll
 
-all: $(MSIFILE)
+all: $(MSIFILE) $(WOW64_MSIFILE)
 
 $(OBJFILE): kfw.wxs $(WIXINCLUDES)
 	$(CANDLE) -out $@ kfw.wxs \
@@ -46,6 +52,18 @@ $(MSIFILE): $(OBJFILE) $(CUSTOMDLL)
 	$(LIGHT) -out $@ $(OBJFILE) \
 		-loc lang\strings_$(LANG).wxl
 
+!IF ("$(CPU)" == "i386")
+$(WOW64_OBJFILE): kfw-wow64.wxs $(WIXINCLUDES)
+	$(CANDLE) -out $@ kfw-wow64.wxs \
+		"-dDate=%DATE%" \
+		"-dTime=%TIME%" \
+		-dBuildLang=$(LANG)
+
+$(WOW64_MSIFILE): $(WOW64_OBJFILE) $(CUSTOMDLL)
+	$(LIGHT) -out $@ $(WOW64_OBJFILE) \
+		-loc lang\strings_$(LANG).wxl
+!ENDIF
+
 $(CUSTOMDLL): custom\custom.cpp
 	$(CD) custom
 	$(MAKE) -f custom.cpp
@@ -54,6 +72,10 @@ $(CUSTOMDLL): custom\custom.cpp
 clean:
 	$(RM) $(OBJFILE)
 	$(RM) $(MSIFILE)
+!IF ("$(CPU)" == "i386")
+	$(RM) $(WOW64_OBJFILE)
+	$(RM) $(WOW64_MSIFILE)
+!ENDIF
 	$(CD) custom
 	$(MAKE) -f custom.cpp clean
 	$(CD) ..

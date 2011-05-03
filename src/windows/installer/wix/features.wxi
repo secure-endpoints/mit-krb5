@@ -23,6 +23,29 @@
   this software for any purpose.  It is provided "as is" without express
   or implied warranty.
 
+
+  Copyright (C) 2007, 2008, 2009, 2010, 2011 by Secure Endpoints, Inc.
+  All rights reserved.
+
+  Export of this software from the United States of America may
+    require a specific license from the United States Government.
+    It is the responsibility of any person or organization contemplating
+    export to obtain such a license before exporting.
+
+  WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+  distribute this software and its documentation for any purpose and
+  without fee is hereby granted, provided that the above copyright
+  notice appear in all copies and that both that copyright notice and
+  this permission notice appear in supporting documentation, and that
+  the name of Secure Endpoints, Inc. not be used in advertising or publicity
+  pertaining to distribution of the software without specific, written prior
+  permission.  Furthermore if you modify this software you must label
+  your software as modified software and not distribute it in such a
+  fashion that it might be confused with the original Secure Endpoints, Inc.
+  software.  Secure Endpoints, Inc. makes no representations about the
+  suitability of this software for any purpose.  It is provided "as is"
+  without express or implied warranty.
+
   -->
 <Include xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
     <Feature
@@ -41,6 +64,216 @@
             Title="$(loc.KerberosClientTitle)"
             Level="30">
 
+            <Feature
+                 Id="feaKfwClientGssKrb5"
+                 AllowAdvertise="no"
+                 Description="$(loc.KerberosClientGssKrb5Desc)"
+                 InstallDefault="local"
+                 Title="$(loc.KerberosClientGssKrb5Title)"
+                 Level="30">
+
+                 <ComponentRef Id="cmf_comerr_dll" />
+                 <ComponentRef Id="cmf_gssapi_dll" />
+                 <ComponentRef Id="cmf_krb5_dll" />
+                 <ComponentRef Id="cmf_k5sprt_dll" />
+                 <ComponentRef Id="cmf_wshelp_dll" />
+                 <ComponentRef Id="cmf_xpprof_dll" />
+
+                 <!-- Kerberos V options -->
+                 <ComponentRef Id="cmr_krb5_1" />
+                 <ComponentRef Id="cmr_krb5_2" />
+                 <ComponentRef Id="cmr_krb5_3" />
+                 <ComponentRef Id="cmf_krb5_ini" />
+            </Feature>
+
+            <Feature
+                 Id="feaKfwClientCmdLine"
+                 AllowAdvertise="no"
+                 Description="$(loc.KerberosClientCmdLineDesc)"
+                 InstallDefault="local"
+                 Title="$(loc.KerberosClientCmdLineTitle)"
+                 Level="30">
+
+                <ComponentRef Id="cmf_kdestroy_exe" />
+                <ComponentRef Id="cmf_kcpytkt_exe" />
+                <ComponentRef Id="cmf_kdeltkt_exe" />
+                <ComponentRef Id="cmf_kinit_exe" />
+                <ComponentRef Id="cmf_klist_exe" />
+                <ComponentRef Id="cmf_kpasswd_exe" />
+                <ComponentRef Id="cmf_kvno_exe" />
+                <ComponentRef Id="cmf_ms2mit_exe" />
+                <ComponentRef Id="cmf_mit2ms_exe" />
+            </Feature>
+
+            <Feature
+                 Id="feaKfwClientCCache"
+                 AllowAdvertise="no"
+                 Description="$(loc.KerberosClientCCacheDesc)"
+                 InstallDefault="local"
+                 Title="$(loc.KerberosClientCCacheTitle)"
+                 Level="30">
+
+                <ComponentRef Id="cmf_krbcc_dll" />
+                <?ifndef BinsOnly?>
+                    <ComponentRef Id="cmf_krbcc_exe" />
+                <?endif?>
+            </Feature>
+
+            <Feature
+                 Id="feaKfwClientLeash"
+                 AllowAdvertise="no"
+                 Description="$(loc.KerberosClientLeashDesc)"
+                 InstallDefault="local"
+                 Title="$(loc.KerberosClientLeashTitle)"
+                 Level="30">
+
+                 <ComponentRef Id="cmf_leashw_dll" />
+
+                 <?ifndef BinsOnly?>
+                 <?if $(var.Platform) = "Intel" ?>
+                 <Feature
+                     Id="feaKfwClientLeashGui"
+                     AllowAdvertise="no"
+                     Description="$(loc.KerberosClientLeashGuiDesc)"
+                     InstallDefault="local"
+                     Title="$(loc.KerberosClientLeashGuiTitle)"
+                     Level="130">
+
+                     <ComponentRef Id="cmf_leash32_exe" />
+                     <ComponentRef Id="csc_leash32_exe" />
+                     <?ifdef OldHelp?>
+                     <ComponentRef Id="cmf_leash32_hlp" />
+                     <?else?>
+                     <ComponentRef Id="cmf_leash32_chm" />
+                     <?endif?>
+
+                     <!-- Leash config options -->
+                     <ComponentRef Id="cmr_leash_1" />
+                     <ComponentRef Id="cmr_leash_2" />
+                     <ComponentRef Id="cmr_leash_3" />
+                     <ComponentRef Id="cmr_leash_5" />
+                     <ComponentRef Id="cmr_leash_6" />
+
+                     <Feature Id="feaKfwLeashStartup" AllowAdvertise="no" Display="hidden" Level="130">
+                         <Condition Level="30">LEASHAUTOSTART = 1</Condition>
+                         <ComponentRef Id="csc_LeashStartup" />
+                     </Feature>
+                 </Feature>
+                 <?endif?>
+                 <?endif?>
+
+                 <!-- Leash dll options -->
+                 <ComponentRef Id="cmr_leashdll_1" />
+                 <ComponentRef Id="cmr_leashdll_2" />
+                 <ComponentRef Id="cmr_leashdll_3" />
+                 <ComponentRef Id="cmr_leashdll_4" />
+                 <ComponentRef Id="cmr_leashdll_5" />
+                 <ComponentRef Id="cmr_leashdll_6" />
+                 <ComponentRef Id="cmr_leashdll_7" />
+                 <ComponentRef Id="cmr_leashdll_8" />
+                 <ComponentRef Id="cmr_leashdll_9" />
+                 <ComponentRef Id="cmr_leashdll_10" />
+                 <ComponentRef Id="cmr_leashdll_11" />
+                 <ComponentRef Id="cmr_leashdll_12" />
+                 <ComponentRef Id="cmr_leashdll_13" />
+                 <ComponentRef Id="cmr_leashdll_15" />
+                 <ComponentRef Id="cmr_leashdll_16" />
+                 <ComponentRef Id="cmr_leashdll_17" />
+
+            </Feature>
+
+            <?ifndef BinsOnly?>
+            <Feature
+                 Id="feaKfwClientNetworkProvider"
+                 AllowAdvertise="no"
+                 Description="$(loc.KerberosClientNetworkProviderDesc)"
+                 InstallDefault="local"
+                 Title="$(loc.KerberosClientNetworkProviderTitle)"
+                 Level="30">
+
+                 <ComponentRef Id="cmf_kfwlogon_DLL" />
+                 <ComponentRef Id="cmf_kfwcpcc_EXE" />
+            </Feature>
+            <?endif?>
+
+            <Feature
+                 Id="feaKfwClientGssSample"
+                 AllowAdvertise="no"
+                 Description="$(loc.KerberosClientGssSampleDesc)"
+                 InstallDefault="local"
+                 Title="$(loc.KerberosClientGssSampleTitle)"
+                 Level="130">
+
+                 <ComponentRef Id="cmf_gss_client_exe" />
+                 <ComponentRef Id="cmf_gss_server_exe" />
+                 <?if $(var.Platform) = "Intel" ?>
+                      <ComponentRef Id="cmf_gss_exe" />
+	         <?endif?>
+            </Feature>
+
+            <?if $(var.Platform) = "Intel" ?>
+            <Feature
+                 Id="feaKfwClientKrb4"
+                 AllowAdvertise="no"
+                 Description="$(loc.KerberosClientKrb4Desc)"
+                 InstallDefault="local"
+                 Title="$(loc.KerberosClientKrb4Title)"
+                 Level="130">
+                <ComponentRef Id="cmf_k524init_exe" />
+                <ComponentRef Id="cmf_kclnt32_dll" />
+                <ComponentRef Id="cmf_krb524_dll" />
+                <ComponentRef Id="cmf_krbv4w32_dll" />
+
+                <!-- Kerberos IV options -->
+                <ComponentRef Id="cmr_krb4_1" />
+                <ComponentRef Id="cmr_krb4_2" />
+                <ComponentRef Id="cmr_krb4_3" />
+                <ComponentRef Id="cmr_krb4_4" />
+
+                <ComponentRef Id="cmf_krb_con" />
+                <ComponentRef Id="cmf_krbrealm_con" />
+            </Feature>
+            <?endif?>
+
+            <?ifndef BinsOnly?>
+            <Feature
+                 Id="feaKfwClientNetIdMgr"
+                 AllowAdvertise="no"
+                 Description="$(loc.KerberosClientNetIdMgrDesc)"
+                 InstallDefault="local"
+                 Title="$(loc.KerberosClientNetIdMgrTitle)"
+                 Level="130">
+
+                 <ComponentRef Id="cmf_netidmgr_exe" />
+                 <ComponentRef Id="cmf_nidmgr32_dll" />
+                 <?if $(var.Platform) = "Intel" ?>
+                     <ComponentRef Id="cmf_netidmgr_exe_w2k" />
+                     <ComponentRef Id="cmf_nidmgr32_dll_w2k" />
+                 <?endif?>
+                 <ComponentRef Id="cmf_krb5cred_dll" />
+                 <ComponentRef Id="cmf_krb5cred_en_us_dll" />
+
+                 <?if $(var.Platform) = "Intel" ?>
+                 <Feature
+                     Id="feaKfwClientNetIdMgrKrb4"
+                     AllowAdvertise="no"
+                     Description="$(loc.KerberosClientNetIdMgrKrb4Desc)"
+                     InstallDefault="local"
+                     Title="$(loc.KerberosClientNetIdMgrKrb4Title)"
+                     Level="130">
+
+                     <ComponentRef Id="cmf_krb4cred_dll" />
+                     <ComponentRef Id="cmf_krb4cred_en_us_dll" />
+                 </Feature>
+                 <?endif?>
+
+                 <Feature Id="feaKfwNetIdMgrStartup" AllowAdvertise="no" Display="hidden" Level="130">
+                     <Condition Level="30">LEASHAUTOSTART = 1</Condition>
+                     <ComponentRef Id="csc_NetIDMgrStartup" />
+                 </Feature>
+            </Feature>
+            <?endif?>
+
             <?ifdef DebugSyms?>
 	    	<Feature
                     Id="feaKfwClientDebug"
@@ -51,127 +284,19 @@
                     Level="$(var.DebugSymLowLevel)"
                     Title="$(loc.StrKerberosClientDebugTitle)">
                     <ComponentRef Id="cmf_bin_debug"/>
-		    <ComponentRef Id="cmp_ClientSystemDebug"/>
+		    <ComponentRef Id="cmf_ClientSystemDebug"/>
                     <?include runtime_debug.wxi?>
 	        </Feature>
 	    <?endif?>
 
-            <ComponentRef Id="cmf_comerr32_dll" />
-            <ComponentRef Id="cmf_gss_exe" />
-            <ComponentRef Id="cmf_gss_client_exe" />
-            <ComponentRef Id="cmf_gss_server_exe" />
-            <ComponentRef Id="cmf_gssapi32_dll" />
-            <ComponentRef Id="cmf_kdestroy_exe" />
-            <ComponentRef Id="cmf_kcpytkt_exe" />
-            <ComponentRef Id="cmf_kdeltkt_exe" />
-            <ComponentRef Id="cmf_kinit_exe" />
-            <ComponentRef Id="cmf_klist_exe" />
-            <ComponentRef Id="cmf_kpasswd_exe" />
-            <ComponentRef Id="cmf_kvno_exe" />
-            <ComponentRef Id="cmf_krb5_32_dll" />
-            <ComponentRef Id="cmf_k5sprt32_dll" />
-            <ComponentRef Id="cmf_krbcc32_dll" />
-            <ComponentRef Id="cmf_krbcc32s_exe" />
-            <ComponentRef Id="cmf_ms2mit_exe" />
-            <ComponentRef Id="cmf_mit2ms_exe" />
-            <ComponentRef Id="cmf_wshelp32_dll" />
-            <ComponentRef Id="cmf_xpprof32_dll" />
-
-            <ComponentRef Id="cmf_leashw32_dll" />
-
-        <?if $(var.Platform) = "Intel" ?>
-            <ComponentRef Id="cmf_leash32_exe" />
-            <ComponentRef Id="csc_leash32_exe" />
-
-            <ComponentRef Id="cmf_k524init_exe" />
-            <ComponentRef Id="cmf_kclnt32_dll" />
-            <ComponentRef Id="cmf_krb524_dll" />
-            <ComponentRef Id="cmf_krbv4w32_dll" />
-          <?endif?>
-
-            <ComponentRef Id="cmf_nidmgr32_dll" />
-        <?if $(var.Platform) = "Intel" ?>
-            <ComponentRef Id="cmf_nidmgr32_dll_w2k" />
-        <?endif?>
-            <ComponentRef Id="cmf_krb5cred_dll" />
-            <ComponentRef Id="cmf_krb5cred_en_us_dll" />
-            <ComponentRef Id="cmf_netidmgr_exe" />
-        <?if $(var.Platform) = "Intel" ?>
-            <ComponentRef Id="cmf_krb4cred_dll" />
-            <ComponentRef Id="cmf_krb4cred_en_us_dll" />
-        <?endif?>
-          <?if $(var.Platform) = "Intel" ?>
-            <ComponentRef Id="cmf_netidmgr_exe_w2k" />
-        <?endif?>
-	    <ComponentRef Id="cmf_kfwlogon_DLL" />
-            <ComponentRef Id="cmf_kfwcpcc_EXE" />
-
-        <?if $(var.Platform) = "Intel" ?>
-            <!-- Kerberos IV options -->
-            <ComponentRef Id="rcm_krb4_1" />
-            <ComponentRef Id="rcm_krb4_2" />
-            <ComponentRef Id="rcm_krb4_3" />
-            <ComponentRef Id="rcm_krb4_4" />
-        <?endif?>
-
-            <!-- Kerberos V options -->
-            <ComponentRef Id="rcm_krb5_1" />
-            <ComponentRef Id="rcm_krb5_2" />
-            <ComponentRef Id="rcm_krb5_3" />
-
-        <?if $(var.Platform) = "Intel" ?>
-            <!-- Leash config options -->
-            <ComponentRef Id="rcm_leash_1" />
-            <ComponentRef Id="rcm_leash_2" />
-            <ComponentRef Id="rcm_leash_3" />
-            <ComponentRef Id="rcm_leash_5" />
-            <ComponentRef Id="rcm_leash_6" />
-
-        <?ifdef OldHelp?>
-            <ComponentRef Id="cmf_leash32_hlp" />
-        <?else?>
-            <ComponentRef Id="cmf_leash32_chm" />
-        <?endif?>
-        <?endif?>
-
-            <!-- Leash dll options -->
-            <ComponentRef Id="rcm_leashdll_1" />
-            <ComponentRef Id="rcm_leashdll_2" />
-            <ComponentRef Id="rcm_leashdll_3" />
-            <ComponentRef Id="rcm_leashdll_4" />
-            <ComponentRef Id="rcm_leashdll_5" />
-            <ComponentRef Id="rcm_leashdll_6" />
-            <ComponentRef Id="rcm_leashdll_7" />
-            <ComponentRef Id="rcm_leashdll_8" />
-            <ComponentRef Id="rcm_leashdll_9" />
-            <ComponentRef Id="rcm_leashdll_10" />
-            <ComponentRef Id="rcm_leashdll_11" />
-            <ComponentRef Id="rcm_leashdll_12" />
-            <ComponentRef Id="rcm_leashdll_13" />
-            <ComponentRef Id="rcm_leashdll_15" />
-            <ComponentRef Id="rcm_leashdll_16" />
-            <ComponentRef Id="rcm_leashdll_17" />
-
-            <ComponentRef Id="cmf_psapi_dll" />
-
-            <ComponentRef Id="cmf_krb5_ini" />
-            <ComponentRef Id="cmf_krb_con" />
-            <ComponentRef Id="cmf_krbrealm_con" />
-
-            <ComponentRef Id="rcm_common" />
-            <ComponentRef Id="rcm_client" />
-
-            <Feature Id="feaKfwLeashStartup" AllowAdvertise="no" Display="hidden" Level="130">
-                <Condition Level="30">LEASHAUTOSTART = 1</Condition>
-                <ComponentRef Id="csc_NetIDMgrStartup" />
-                <?if $(var.Platform) = "Intel"?>
-                        <ComponentRef Id="csc_LeashStartup" />
-                <?endif?>
-            </Feature>
+            <ComponentRef Id="cmr_common" />
+            <ComponentRef Id="cmr_client" />
 
             <?include runtime.wxi?>
+
         </Feature> <!-- /feaKfwClient -->
 
+        <?ifndef BinsOnly?>
         <Feature
             Id="feaKfwSDK"
             AllowAdvertise="no"
@@ -182,15 +307,23 @@
 
             <ComponentRef Id="cmp_dirdoc_netid" />
         <?if $(var.Platform) = "Intel" ?>
-          <ComponentRef Id="cmp_dirinc_krb4" />
-          <ComponentRef Id="cmp_dirlib_i386" />
+            <ComponentRef Id="cmp_dirinc_kclient" />
+            <ComponentRef Id="cmp_dirinc_krb4" />
+            <ComponentRef Id="cmp_dirlib_i386" />
+            <?ifndef NoCygwin?>
+            <ComponentRef Id="cmp_dirlib_i386_cygwin" />
+            <?endif?>
         <?else?>
             <ComponentRef Id="cmp_dirlib_amd64" />
+            <?ifndef NoCygwin?>
+            <ComponentRef Id="cmp_dirlib_amd64_cygwin" />
+            <?endif?>
         <?endif?>
             <ComponentRef Id="cmp_dirinc_krb5_gssapi" />
             <ComponentRef Id="cmp_dirinc_krb5_KerberosIV" />
             <ComponentRef Id="cmp_dirinc_krb5_krb5" />
             <ComponentRef Id="cmp_dirinc_krb5" />
+            <ComponentRef Id="cmp_dirinc_krbcc" />
             <ComponentRef Id="cmp_dirinc_leash" />
             <ComponentRef Id="cmp_dirinc_loadfuncs" />
             <ComponentRef Id="cmp_dirinc_wshelper" />
@@ -204,10 +337,12 @@
             <ComponentRef Id="cmp_credprov_files" />
             <ComponentRef Id="cmp_credprov_images_files" />
             <ComponentRef Id="cmp_credprov_en_us_files" />
-            <ComponentRef Id="rcm_common" />
-            <ComponentRef Id="rcm_sdk" />
+            <ComponentRef Id="cmr_common" />
+            <ComponentRef Id="cmr_sdk" />
         </Feature> <!-- /feaKfwSDK -->
+        <?endif?>
 
+        <?ifndef BinsOnly?>
         <Feature
             Id="feaKfwDocs"
             AllowAdvertise="no"
@@ -222,9 +357,9 @@
             <ComponentRef Id="efl_netidmgr_userdoc_pdf" />
             <ComponentRef Id="efl_relnotes_html" />
 
-            <ComponentRef Id="rcm_common" />
-            <ComponentRef Id="rcm_docs" />
+            <ComponentRef Id="cmr_common" />
+            <ComponentRef Id="cmr_docs" />
         </Feature>
-
+        <?endif?>
     </Feature>
 </Include>

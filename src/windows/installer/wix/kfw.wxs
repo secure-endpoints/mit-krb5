@@ -23,6 +23,29 @@
   this software for any purpose.  It is provided "as is" without express
   or implied warranty.
 
+
+  Copyright (C) 2007, 2008, 2009, 2010, 2011 by Secure Endpoints, Inc.
+  All rights reserved.
+
+  Export of this software from the United States of America may
+    require a specific license from the United States Government.
+    It is the responsibility of any person or organization contemplating
+    export to obtain such a license before exporting.
+
+  WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+  distribute this software and its documentation for any purpose and
+  without fee is hereby granted, provided that the above copyright
+  notice appear in all copies and that both that copyright notice and
+  this permission notice appear in supporting documentation, and that
+  the name of Secure Endpoints, Inc. not be used in advertising or publicity
+  pertaining to distribution of the software without specific, written prior
+  permission.  Furthermore if you modify this software you must label
+  your software as modified software and not distribute it in such a
+  fashion that it might be confused with the original Secure Endpoints, Inc.
+  software.  Secure Endpoints, Inc. makes no representations about the
+  suitability of this software for any purpose.  It is provided "as is"
+  without express or implied warranty.
+
   -->
 
 <!-- configuration -->
@@ -157,9 +180,13 @@
 	<Custom Action="KillRunningProcesses" After="InstallValidate"/>
 	<RemoveExistingProducts After="KillRunningProcesses">(Not Installed) And (UPGRADEPISMERE Or UPGRADEKFW)</RemoveExistingProducts>
 	<!-- When running with a UI, CCP_Success property is not passed down to the server. -->
-	<Custom Action="AbortNoIE" Before="RemoveNsisInstallation">UILevel = 0 And (Not Installed) And (CCP_Success &lt;&gt; 1)</Custom>
-	<Custom Action="RemoveNsisInstallation" Before="AbortCantRemoveNSIS">UPGRADENSIS &lt;&gt; "" And UILevel &gt;= 4</Custom>
-	<Custom Action="AbortCantRemoveNSIS" Before="CostInitialize">UPGRADENSIS &lt;&gt; "" And UILevel &lt; 4</Custom>
+        <?if $(var.Platform) = "Intel" ?>
+	    <Custom Action="AbortNoIE" Before="RemoveNsisInstallation">UILevel = 0 And (Not Installed) And (CCP_Success &lt;&gt; 1)</Custom>
+            <Custom Action="RemoveNsisInstallation" Before="AbortCantRemoveNSIS">UPGRADENSIS &lt;&gt; "" And UILevel &gt;= 4</Custom>
+            <Custom Action="AbortCantRemoveNSIS" Before="CostInitialize">UPGRADENSIS &lt;&gt; "" And UILevel &lt; 4</Custom>
+        <?else?>
+	    <Custom Action="AbortNoIE" Before="RollbackTgtSessionKey">UILevel = 0 And (Not Installed) And (CCP_Success &lt;&gt; 1)</Custom>
+        <?endif?>
         <Custom Action="RollbackTgtSessionKey" After="WriteRegistryValues">VersionNT &gt;= 500 And &amp;feaKfwClient=3</Custom>
         <Custom Action="EnableTgtSessionKey" After="RollbackTgtSessionKey">VersionNT &gt;= 500 And &amp;feaKfwClient=3</Custom>
         <Custom Action="RevertTgtSessionKey" Before="RemoveRegistryValues">VersionNT &gt;= 500 And &amp;feaKfwClient=2</Custom>
@@ -172,12 +199,14 @@
         <!-- Upgrade paths -->
 
         <!-- MIT Project Pismere MSI -->
-        <Upgrade Id="83977767-388D-4DF8-BB08-3BF2401635BD">
-            <UpgradeVersion IgnoreRemoveFailure="no" IncludeMinimum="no" Maximum="4.0.0" MigrateFeatures="no" Property="UPGRADEPISMERE"/>
-        </Upgrade>
+        <?if $(var.Platform) = "Intel" ?>
+            <Upgrade Id="83977767-388D-4DF8-BB08-3BF2401635BD">
+                <UpgradeVersion IgnoreRemoveFailure="no" IncludeMinimum="no" Maximum="4.0.0" MigrateFeatures="no" Property="UPGRADEPISMERE"/>
+            </Upgrade>
+        <?endif?>
 
         <!-- KfW MSI -->
-        <Upgrade Id="61211594-AAA1-4A98-A299-757326763CC7">
+        <Upgrade Id="$(var.UpgradeCode)">
             <UpgradeVersion IgnoreRemoveFailure="no" IncludeMinimum="no" Maximum="$(var.VersionString)" IncludeMaximum="yes" MigrateFeatures="yes" Property="UPGRADEKFW" />
         </Upgrade>
 
