@@ -3,12 +3,12 @@
 
   Copyright (C) 2004,2005, 2006 by the Massachusetts Institute of Technology.
   All rights reserved.
- 
+
   Export of this software from the United States of America may
     require a specific license from the United States Government.
     It is the responsibility of any person or organization contemplating
     export to obtain such a license before exporting.
- 
+
   WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
   distribute this software and its documentation for any purpose and
   without fee is hereby granted, provided that the above copyright
@@ -22,7 +22,7 @@
   M.I.T. makes no representations about the suitability of
   this software for any purpose.  It is provided "as is" without express
   or implied warranty.
-  
+
   -->
 <Include xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
     <UI>
@@ -387,7 +387,7 @@
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="[ButtonText_Cancel]">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
-        
+
         <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="374" Height="44" TabSkip="no" Text="[BannerBitmap]" />
         <Control Id="Text" Type="Text" X="20" Y="55" Width="330" Height="30">
           <Text>The following applications are currently running and need to be closed in order for the installation to progress.  Please close them manually or click Next to let [Wizard] close them for you.</Text>
@@ -729,7 +729,7 @@
         <Control Id="koAutoStartText" Type="CheckBox" X="25" Y="95" Width="280" Height="30" CheckBoxValue="1" Property="LEASHAUTOSTART" >
 			<Text>Autostart the Network Identity Manager each time you login to Windows</Text>
         </Control>
-        
+
         <Control Id="koAutoInitText" Type="CheckBox" X="25" Y="130" Width="280" Height="30" CheckBoxValue="-autoinit" Property="LEASHAUTOINIT" >
 			<Text>Ensure that the Kerberos tickets are available throughout the Windows login session</Text>
         </Control>
@@ -1158,7 +1158,7 @@
       <Error Id="1933">The Windows Installer service cannot update one or more protected Windows files. {{SFP Error: [2].  List of protected files:\r\n[3]}}</Error>
       <Error Id="1934">User installations are disabled via policy on the machine.</Error>
       <Error Id="1935">An error occured during the installation of assembly component [2]. HRESULT: [3]. {{assembly interface: [4], function: [5], assembly name: [6]}}</Error>
-      
+
       <Error Id="4001">Custom action data not found. STATUS [2]</Error>
       <Error Id="4003">NSIS Uninstallation failed. Status [2]</Error>
       <Error Id="4004">ABORT: [2]</Error>

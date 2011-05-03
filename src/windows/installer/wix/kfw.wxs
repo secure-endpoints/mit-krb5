@@ -3,12 +3,12 @@
 
   Copyright (C) 2004,2005, 2006 by the Massachusetts Institute of Technology.
   All rights reserved.
- 
+
   Export of this software from the United States of America may
     require a specific license from the United States Government.
     It is the responsibility of any person or organization contemplating
     export to obtain such a license before exporting.
- 
+
   WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
   distribute this software and its documentation for any purpose and
   without fee is hereby granted, provided that the above copyright
@@ -22,7 +22,7 @@
   M.I.T. makes no representations about the suitability of
   this software for any purpose.  It is provided "as is" without express
   or implied warranty.
-  
+
   -->
 
 <!-- configuration -->
@@ -30,7 +30,7 @@
 <?include platform.wxi?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
-    <Product 
+    <Product
         Id="$(var.ProductCode)"
         Codepage="$(var.CodePage)"
         Language="$(var.Language)"
@@ -38,9 +38,9 @@
         Name="$(var.ProductName)"
         UpgradeCode="$(var.UpgradeCode)"
         Version="$(var.VersionString)">
-    
+
         <!-- The weird package code results in a new one being generated each time we compile -->
-        <Package 
+        <Package
             Id="????????-????-????-????-????????????"
             Keywords="Installer,MSI,Database"
             Description="$(var.ProductName)"
@@ -50,14 +50,14 @@
             Languages="$(var.Language)"
             Compressed="yes"
             SummaryCodepage="$(var.CodePage)"
-            Platforms="$(var.Platform)" 
+            Platforms="$(var.Platform)"
             />
-        
+
         <?include lang\ui_$(var.BuildLang).wxi?>
         <?include files.wxi?>
         <?include features.wxi?>
         <?include property.wxi?>
-        
+
         <!-- Launch conditions -->
         <Condition Message="$(loc.AdminRequired)">Privileged</Condition>
         <Condition Message="$(loc.OsVersionRequired)">VersionNT &gt;= 500</Condition>
@@ -71,8 +71,8 @@
 
         <!-- Custom actions -->
         <Binary Id="binCustom" src="custom\custom.dll" />
-        
-        <CustomAction 
+
+        <CustomAction
             Id="EnableTgtSessionKey"
             BinaryKey="binCustom"
             DllEntry="EnableAllowTgtSessionKey"
@@ -81,7 +81,7 @@
             Return="check" />
         <Property Id="EnableTgtSessionKey" Value="$(var.VersionString)" />
 
-        <CustomAction 
+        <CustomAction
             Id="RevertTgtSessionKey"
             BinaryKey="binCustom"
             DllEntry="RevertAllowTgtSessionKey"
@@ -90,7 +90,7 @@
             Return="check" />
         <Property Id="RevertTgtSessionKey" Value="$(var.VersionString)" />
 
-        <CustomAction 
+        <CustomAction
             Id="RollbackTgtSessionKey"
             BinaryKey="binCustom"
             DllEntry="RevertAllowTgtSessionKey"
@@ -99,29 +99,29 @@
             Return="check" />
         <Property Id="RollbackTgtSessionKey" Value="$(var.VersionString)" />
 
-	<CustomAction 
-            Id="RemoveNsisInstallation" 
+	<CustomAction
+            Id="RemoveNsisInstallation"
             BinaryKey="binCustom"
             DllEntry="UninstallNsisInstallation"
             Execute="immediate" />
 
 	<CustomAction
-            Id="AbortCantRemoveNSIS" 
-            Value="[CantRemoveNSISError]" 
+            Id="AbortCantRemoveNSIS"
+            Value="[CantRemoveNSISError]"
             Property="CantRemoveNSISError" />
 
 	<CustomAction
             Id="AbortNoIE"
-            Value="[NoIE501Error]" 
+            Value="[NoIE501Error]"
             Property="NoIE501Error" />
-            
+
         <CustomAction
             Id="ListRunningProcesses"
             BinaryKey="binCustom"
             DllEntry="ListRunningProcesses"
             Execute="immediate"
             Return="ignore" />
-            
+
         <CustomAction
             Id="KillRunningProcesses"
             BinaryKey="binCustom"
@@ -150,7 +150,7 @@
          DllEntry="UninstallNetProvider"
          Return="ignore"
          Execute="rollback" />
-	
+
 	<!-- Installation Sequences -->
 	<AdminExecuteSequence />
         <InstallExecuteSequence>
@@ -175,31 +175,31 @@
         <Upgrade Id="83977767-388D-4DF8-BB08-3BF2401635BD">
             <UpgradeVersion IgnoreRemoveFailure="no" IncludeMinimum="no" Maximum="4.0.0" MigrateFeatures="no" Property="UPGRADEPISMERE"/>
         </Upgrade>
-        
+
         <!-- KfW MSI -->
         <Upgrade Id="61211594-AAA1-4A98-A299-757326763CC7">
             <UpgradeVersion IgnoreRemoveFailure="no" IncludeMinimum="no" Maximum="$(var.VersionString)" IncludeMaximum="yes" MigrateFeatures="yes" Property="UPGRADEKFW" />
         </Upgrade>
-       
+
         <!-- NSIS installation -->
         <!-- The NSIS installation, being non-MSI, is detected and removed through other means. -->
-        
+
         <!-- Check and warn if we don't have the right version of IE installed -->
         <ComplianceCheck>
             <DirectorySearch Id="ccd_iphlpapi" Depth="1" Path="[SystemFolder]">
                 <FileSearch Id="cc_iphlp" MinDate="1999-04-23T00:00:00-05:00" Name="iphlpapi.dll" />
             </DirectorySearch>
         </ComplianceCheck>
-        
+
         <!-- We embed all the files in a single cabinet. -->
         <Media Id="1" Cabinet="Disk1" CompressionLevel="high" EmbedCab="yes" />
-        
+
         <!-- Custom table used by KillProcesses custom action -->
         <CustomTable Id="KillProcess">
             <Column Id="Id" PrimaryKey="yes" Nullable="no" Type="string" Width="32" />
             <Column Id="Image" Nullable="no" Type="string" Width="255" />
             <Column Id="Desc" Nullable="yes" Type="string" Width="255" />
-            
+
             <Row>
                 <Data Column="Id">kpLeash</Data>
                 <Data Column="Image">leash32.exe</Data>
@@ -243,4 +243,4 @@
         </CustomTable>
     </Product>
 </Wix>
- 
+

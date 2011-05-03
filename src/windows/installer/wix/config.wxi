@@ -3,12 +3,12 @@
 
   Copyright (C) 2004, 2005, 2006 by the Massachusetts Institute of Technology.
   All rights reserved.
- 
+
   Export of this software from the United States of America may
     require a specific license from the United States Government.
     It is the responsibility of any person or organization contemplating
     export to obtain such a license before exporting.
- 
+
   WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
   distribute this software and its documentation for any purpose and
   without fee is hereby granted, provided that the above copyright
@@ -22,13 +22,13 @@
   M.I.T. makes no representations about the suitability of
   this software for any purpose.  It is provided "as is" without express
   or implied warranty.
-  
+
   -->
 <Include xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
 
     <!-- include site sepecific customizations -->
     <?include site-local.wxi?>
-    
+
     <!-- Sanity checks -->
     <?ifndef var.CL1200?>
         <?ifndef var.CL1300?>
@@ -59,7 +59,7 @@
     <?else?>
         <?error Unknown build type?>
     <?endif?>
-    
+
     <?define KfwRegRoot="SOFTWARE\MIT\Kerberos"?>
 
     <?define DocDir="$(var.TargetDir)doc\"?>
@@ -69,7 +69,7 @@
     <?define SystemDir="$(env.SystemRoot)\System32\"?>
 
     <?include lang\config_$(var.BuildLang).wxi?>
-    
+
     <!-- Parameters for the features containing debug symbols -->
     <?ifdef DebugSyms?>
          <?ifdef Debug?>
@@ -82,7 +82,7 @@
              <?define DebugSymHighLevel="130"?>
          <?endif?>
     <?endif?>
-    
+
     <!-- Configuration macros -->
     <?ifndef LeashAfsStatus?>
         <?define LeashAfsStatus="1"?>

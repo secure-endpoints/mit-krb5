@@ -89,7 +89,7 @@ Kerberos for Windows
 
     E.g:
        > copy kfw.msi kfw-modified.msi
-       
+
        (edit the kfw-modified.msi to include the necessary changes)
 
        > msitran -g kfw.msi kfw-modified.msi kfw-transform.mst
@@ -490,14 +490,14 @@ Kerberos for Windows
 
     Value   : AllowCritical
     Type    : DWORD (Boolean)
-    Default : 1	
+    Default : 1
 
         Enables critical warning notifications.
 
 
-    Value   : AllowWarn	
+    Value   : AllowWarn
     Type    : DWORD (Boolean)
-    Default : 1	
+    Default : 1
 
         Enables warning notifications.
 
@@ -528,9 +528,9 @@ Kerberos for Windows
         there are no credentials when NetIDMgr starts.
 
 
-    Value   : AutoStart	
+    Value   : AutoStart
     Type    : DWORD (0 or 1)
-    Default : 0	
+    Default : 0
 
         Start NetIDMgr when Windows starts
 
@@ -543,14 +543,14 @@ Kerberos for Windows
         trigger a credential renewal.  Requires AllowAutoRenew to be enabled.
 
 
-    Value   : CriticalThreshold	
+    Value   : CriticalThreshold
     Type    : DWORD (seconds)
     Default : 300
 
         Specifies the time period before credential expiration that will
         trigger the second and final warning balloon.  Requires AllowCritical
         to be enabled.
-        
+
 
     Value   : DefaultAllowAutoRenew
     Type    : DWORD (Boolean)
@@ -603,11 +603,11 @@ Kerberos for Windows
 
         If '50025', the default notification icon menu action will be to
         Show the Network Identity Manager application windows.
-        If '50008', the default notification icon menu action will be to 
+        If '50008', the default notification icon menu action will be to
         display the Obtain New Credentials dialog.
 
 
-    Value   : RefreshTimeout	
+    Value   : RefreshTimeout
     Type    : DWORD (seconds)
     Default : 60
 
@@ -908,7 +908,7 @@ Kerberos for Windows
        Upgrade code {6DA9CD86-6028-4852-8C94-452CAC229244}
        Upto current release
 
-    2) "MIT Project Pismere Kerberos for Windows" MSI package and 
+    2) "MIT Project Pismere Kerberos for Windows" MSI package and
        "MIT SWRT Kerberos for Windows" MSI
 
        Upgrade code {83977767-388D-4DF8-BB08-3BF2401635BD}
@@ -926,7 +926,7 @@ Kerberos for Windows
        that have the "Kerberos for Windows" NSIS package installed.
 
        Note that the NSIS package is only available for 32-bit i386.
-       You cannot install both the 32-bit NSIS and 64-bit amd64 MSI 
+       You cannot install both the 32-bit NSIS and 64-bit amd64 MSI
        packages on the same machine.  To install both 32-bit and 64-bit
        KFW, you must use the MSI packages of both.
 

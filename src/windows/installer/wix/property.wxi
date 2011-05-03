@@ -4,12 +4,12 @@
   Copyright (C) 2004, 2005, 2006 by the Massachusetts Institute of Technology.
   Copyright (C) 2007 Secure Endpoints Inc.
   All rights reserved.
- 
+
   Export of this software from the United States of America may
     require a specific license from the United States Government.
     It is the responsibility of any person or organization contemplating
     export to obtain such a license before exporting.
- 
+
   WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
   distribute this software and its documentation for any purpose and
   without fee is hereby granted, provided that the above copyright
@@ -23,7 +23,7 @@
   M.I.T. makes no representations about the suitability of
   this software for any purpose.  It is provided "as is" without express
   or implied warranty.
-  
+
   -->
 <Include xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
 
@@ -32,7 +32,7 @@
 
     <Property Id="LEASHAUTOINIT" Admin="yes" Secure="yes">-autoinit</Property>
     <Property Id="LEASHAUTOSTART" Admin="yes" Secure="yes">1</Property>
-    
+
     <Property Id="ARPCOMMENTS">$(var.ARPComments)</Property>
     <Property Id="ARPCONTACT">kerberos@mit.edu</Property>
     <Property Id="ARPURLINFOABOUT">http://web.mit.edu/kerberos</Property>
@@ -43,7 +43,7 @@
     <Property Id="UPGRADENSIS">
         <RegistrySearch Win64="$(var.Win64)" Id="regsrch_NSIS" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberos for Windows" Name="UninstallString" Type="raw"/>
     </Property>
-    
+
     <Property Id="NSISVERSION">
         <RegistrySearch Win64="$(var.Win64)" Id="regsrch_NSISV" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\Kerberos for Windows" Name="DisplayVersion" Type="raw" />
     </Property>
@@ -52,7 +52,7 @@
     <Property Id="NoIE501Error">$(loc.IE501Required)</Property>
 
     <!--  Additional properties relating to the UI are in the appropriate UI.wxi file -->
-    
+
     <!-- Configuration properties.  If these properties are defined, then
          the corresponding component will be enabled. If the corresponding
          variable value is the empty string (""), then the properties will

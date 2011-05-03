@@ -101,7 +101,7 @@ void ShowMsiError( MSIHANDLE hInstall, DWORD errcode, DWORD param ){
 	MsiRecordSetInteger(hRecord, 2, param);
 
 	MsiProcessMessage( hInstall, INSTALLMESSAGE_ERROR, hRecord );
-	
+
 	MsiCloseHandle( hRecord );
 }
 
@@ -160,7 +160,7 @@ UINT SetAllowTgtSessionKey( MSIHANDLE hInstall, BOOL pInstall ) {
     phase = 2;
 
     rv = RegOpenKeyEx( HKEY_LOCAL_MACHINE, _T( LSA_KERBEROS_KEY ), 0, KEY_READ | KEY_WRITE, &hkLsaKerberos );
-    if(rv != ERROR_SUCCESS) 
+    if(rv != ERROR_SUCCESS)
         goto cleanup;
 
     phase = 3;
@@ -369,7 +369,7 @@ UINT KillRunningProcessesSlave( MSIHANDLE hInstall, BOOL bKill )
         MsiCloseHandle( hView );
 
         hView = NULL;
-        
+
         rv = MsiDatabaseOpenView( hDatabase,
               _T( "SELECT * FROM `ListBox` WHERE `Property` = 'KillableProcesses'" ),
             &hViewInsert); RV_BAIL;
@@ -385,7 +385,7 @@ UINT KillRunningProcessesSlave( MSIHANDLE hInstall, BOOL bKill )
     }
 
     // Open a view
-    rv = MsiDatabaseOpenView( hDatabase, 
+    rv = MsiDatabaseOpenView( hDatabase,
         _T( "SELECT `Image`,`Desc` FROM `KillProcess`" ),
         &hView); RV_BAIL;
 
@@ -394,7 +394,7 @@ UINT KillRunningProcessesSlave( MSIHANDLE hInstall, BOOL bKill )
     do {
         rv = MsiViewFetch( hView, &hRecord );
         if(rv != ERROR_SUCCESS) {
-            if(hRecord) 
+            if(hRecord)
                 MsiCloseHandle(hRecord);
             hRecord = NULL;
             break;
@@ -416,7 +416,7 @@ UINT KillRunningProcessesSlave( MSIHANDLE hInstall, BOOL bKill )
     hRecord = NULL;
 
     // now we have all the processes in the array.  Check if they are running.
-    
+
     hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
     if(hSnapshot == INVALID_HANDLE_VALUE) {
         rv = GetLastError();
@@ -567,7 +567,7 @@ MSIDLLEXPORT UninstallNsisInstallation( MSIHANDLE hInstall )
 	sInfo.hStdOutput = 0;
 	sInfo.hStdError = 0;
 
-	if(!CreateProcess( 
+	if(!CreateProcess(
 		strPathUninst,
 		_T("Uninstall /S"),
 		NULL,
@@ -588,7 +588,7 @@ MSIDLLEXPORT UninstallNsisInstallation( MSIHANDLE hInstall )
             MsiRecordSetInteger(hRecord, 3, lastError);
 
             MsiProcessMessage( hInstall, INSTALLMESSAGE_ERROR, hRecord );
-	
+
             MsiCloseHandle( hRecord );
 
             pInfo.hProcess = NULL;
@@ -635,7 +635,7 @@ MSIDLLEXPORT UninstallNsisInstallation( MSIHANDLE hInstall )
 	}
 
 	rv = ERROR_SUCCESS;
-    
+
 _cleanup:
 	if(hIo) CloseHandle(hIo);
 	if(pInfo.hProcess)	CloseHandle( pInfo.hProcess );
@@ -652,7 +652,7 @@ _cleanup:
 /* Check and add or remove networkprovider key value
         str : target string
         str2: string to add/remove
-        bInst: == 1 if string should be added to target if not already there, 
+        bInst: == 1 if string should be added to target if not already there,
 	otherwise remove string from target if present.
 */
 int npi_CheckAndAddRemove( LPTSTR str, LPTSTR str2, int bInst ) {

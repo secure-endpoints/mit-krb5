@@ -10,7 +10,7 @@
         <?define cmf_kfwcpcc_EXE_guid="83F51B6D-F3C6-44cf-AC91-D1D6498FFA44"?>
         <?define cmp_ClientSystemDebug_guid="7B25B1E0-A22A-43c7-BA97-C30FCA3B1230"?>
         <?define rcm_krb4_1_guid="B3CF770A-2C0F-44c0-8F5B-7B808369D225"?>
-        <?define rcm_krb4_2_guid="0CF5732A-7659-4cf9-8D01-7E75E6DA2639"?>                                        
+        <?define rcm_krb4_2_guid="0CF5732A-7659-4cf9-8D01-7E75E6DA2639"?>
         <?define rcm_krb4_3_guid="6A279F11-E441-49cb-80F0-3D807D7230DE"?>
         <?define rcm_krb4_4_guid="CACB3731-C532-4d28-9E44-FFF35C1376D5"?>
         <?define rcm_krb5_1_guid="21883AD6-1C00-4f1d-9922-477CF63CE6BF"?>

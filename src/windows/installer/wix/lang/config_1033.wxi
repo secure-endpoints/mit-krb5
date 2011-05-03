@@ -3,12 +3,12 @@
 
   Copyright (C) 2004 by the Massachusetts Institute of Technology.
   All rights reserved.
- 
+
   Export of this software from the United States of America may
     require a specific license from the United States Government.
     It is the responsibility of any person or organization contemplating
     export to obtain such a license before exporting.
- 
+
   WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
   distribute this software and its documentation for any purpose and
   without fee is hereby granted, provided that the above copyright
@@ -22,10 +22,10 @@
   M.I.T. makes no representations about the suitability of
   this software for any purpose.  It is provided "as is" without express
   or implied warranty.
-  
+
   -->
 <Include xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
-    
+
     <?define VersionString="$(var.VersionMajor).$(var.VersionMinor).$(var.VersionPatch)"?>
     <?if $(var.Platform) = "x64" ?>
         <?define BaseProductName="$(loc.ProductName64)"?>
@@ -36,8 +36,8 @@
     <?else?>
         <?error Unknown build type?>
     <?endif?>
-    
-    <?ifdef var.Beta?> 
+
+    <?ifdef var.Beta?>
         <?ifndef var.Debug?>
             <?define ProductFullName="$(loc.ProductMIT) $(var.BaseProductName) $(var.VersionString) $(loc.ProductBeta) $(var.Beta) "?>
         <?else?>
@@ -54,11 +54,11 @@
             <?ifndef var.Date?>
                 <?error Date string must be specified?>
             <?endif?>
-            
+
             <?ifndef var.Time?>
                 <?error Time string must be specified?>
             <?endif?>
-            
+
             <?ifndef var.Debug?>
                 <?define ProductFullName="$(loc.ProductMIT) $(var.BaseProductName) $(var.VersionString) $(var.Date) $(var.Time)"?>
             <?else?>

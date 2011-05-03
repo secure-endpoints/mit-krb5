@@ -3,12 +3,12 @@
 
   Copyright (C) 2004, 2005, 2006 by the Massachusetts Institute of Technology.
   All rights reserved.
- 
+
   Export of this software from the United States of America may
     require a specific license from the United States Government.
     It is the responsibility of any person or organization contemplating
     export to obtain such a license before exporting.
- 
+
   WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
   distribute this software and its documentation for any purpose and
   without fee is hereby granted, provided that the above copyright
@@ -22,7 +22,7 @@
   M.I.T. makes no representations about the suitability of
   this software for any purpose.  It is provided "as is" without express
   or implied warranty.
-  
+
   -->
 <Include xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
 <Directory Id="TARGETDIR" Name="SourceDir">
@@ -57,7 +57,7 @@
         <Directory Id="dirMIT" Name="MIT" SourceName=".">
             <Directory Id="KERBEROSDIR" Name="Kerberos">
                 <Directory Id="dirbin" Name="bin" src="$(var.BinDir)">
-                
+
                 <?if $(var.Platform) = "Intel" ?>
 		    <!-- Kerberos IV options -->
 		    <Component Win64="$(var.Win64)" Id="rcm_krb4_1" Guid="$(var.rcm_krb4_1_guid)" DiskId="1">
@@ -77,7 +77,7 @@
 		    	<Condition>KRB4TICKETFILE</Condition>
 		    </Component>
                 <?endif?>
-		    
+
 		    <!-- Kerberos V options -->
 		    <Component Win64="$(var.Win64)" Id="rcm_krb5_1" Guid="$(var.rcm_krb5_1_guid)" DiskId="1">
 		    	<Registry Id="reg_krb5_1" Root="HKLM" Key="Software\MIT\kerberos5" Name="config" Type="string" Value="[KRB5CONFIG]" KeyPath="yes" />
@@ -91,7 +91,7 @@
 		    	<Registry Id="reg_krb5_3" Root="HKLM" Key="Software\MIT\kerberos5" Name="PreserveInitialTicketIdentity" Type="integer" Value="[KRB5PRESERVEIDENTITY]" KeyPath="yes" />
 		    	<Condition>KRB5PRESERVEIDENTITY</Condition>
 		    </Component>
-                
+
                     <Component Win64="$(var.Win64)" Id="cmf_comerr32_dll" Guid="$(var.cmf_comerr32_dll_guid)" DiskId="1">
 	                    <File Id="fil_comerr32_dll" LongName="$(var.cmf_comerr32_dll_name)" Name="$(var.cmf_comerr32_dll_name)" KeyPath="yes" />
                     </Component>
@@ -236,11 +236,11 @@
                     </Component>
                 <?endif?>
         <?endif?>
-                    
+
                     <Component Win64="$(var.Win64)" Id="cmf_leashw32_dll" Guid="$(var.cmf_leashw32_dll_guid)" DiskId="1">
 	                    <File Id="fil_leashw32_dll" LongName="$(var.cmf_leashw32_dll_name)" Name="$(var.cmf_leashw32_dll_name)" KeyPath="yes" />
                     </Component>
-                    
+
                     <!-- Leash DLL configuration -->
                     <Component Win64="$(var.Win64)" Id="rcm_leashdll_1" Guid="$(var.rcm_leashdll_1_guid)" DiskId="1">
 	                    <Registry Id="reg_leashdll_1" Root="HKLM" Key="Software\MIT\Leash" Name="lifetime" Type="integer" Value="[LEASHLIFETIME]" KeyPath="yes"/>
@@ -311,7 +311,7 @@
 	                    <Registry Id="reg_leashdll_17" Root="HKLM" Key="Software\MIT\Leash" Name="preserve_kinit_options" Type="integer" Value="[LEASHPRESERVEKINITOPTIONS]" KeyPath="yes"/>
 	                    <Condition>LEASHPRESERVEKINITOPTIONS</Condition>
                     </Component>
-                    
+
                     <Component Win64="$(var.Win64)" Id="cmf_ms2mit_exe" Guid="$(var.cmf_ms2mit_exe_guid)" DiskId="1">
 	                    <File Id="fil_ms2mit_exe" LongName="ms2mit.exe" Name="ms2mit.exe" KeyPath="yes" />
 	                    <Registry Id="reg_ts_ms2mit_0" Root="HKLM" Key="Software\Microsoft\Windows NT\CurrentVersion\Terminal Server\Compatibility\Applications\ms2mit" Action="createKeyAndRemoveKeyOnUninstall" />
@@ -328,7 +328,7 @@
                     <Component Win64="$(var.Win64)" Id="cmf_xpprof32_dll" Guid="$(var.cmf_xpprof32_dll_guid)" DiskId="1">
 	                    <File Id="fil_xpprof32_dll" LongName="$(var.cmf_xpprof32_dll_name)" Name="$(var.cmf_xpprof32_dll_name)" KeyPath="yes" />
                     </Component>
-                    
+
                     <!-- NetIDMgr  -->
                     <Component Win64="$(var.Win64)" Id="cmf_nidmgr32_dll" Guid="$(var.cmf_nidmgr32_dll_guid)" DiskId="1" Transitive="yes">
 						<File Id="fil_nidmgr32_dll" LongName="$(var.cmf_nidmgr32_dll_name)" Name="$(var.cmf_nidmgr32_dll_name)" KeyPath="yes" />
@@ -403,7 +403,7 @@
                         <Condition>USENETIDMGR</Condition>
                     </Component>
                     <!-- /NetIDMgr -->
-                    
+
                     <!-- Debug symbols -->
                 <?ifdef DebugSyms?>
                     <Component Win64="$(var.Win64)" Id="cmf_bin_debug" Guid="$(var.cmf_bin_debug_guid)" DiskId="1">
@@ -454,7 +454,7 @@
 	                    <File Id="fil_netidmgr_pdb" LongName="netidmgr.pdb" Name="netidmgr.pdb" />
                     </Component>
                 <?endif?>
-                
+
                     <!-- Runtime (for compilers previous to VS8) -->
                 <?ifndef Debug?>
                     <?ifdef CL1200?>
@@ -648,13 +648,13 @@
                             </Component>
                     <?endif?>
                 <?endif?>
-                
+
                     <Component Win64="$(var.Win64)" Id="cmf_psapi_dll" Guid="877F4DD5-8AE0-451C-8F4D-C27F6F30D221" DiskId="1">
 	                    <File Id="fil_psapi_dll" LongName="psapi.dll" Name="psapi.dll" src="$(var.SystemDir)psapi.dll" KeyPath="yes" />
                     </Component>
-                
+
                 </Directory> <!-- /bin -->
-                
+
                 <Directory Id="dirinc" Name="inc" src="$(var.IncDir)">
                     <Directory Id="dirinc_krb5" Name="krb5" src="$(var.IncDir)krb5\">
                       <Directory Id="dirinc_krb4" Name="krb4" src="$(var.IncDir)krb4\">
@@ -722,22 +722,22 @@
                     <Directory Id="dirinc_netidmgr" Name="netidmgr" src="$(var.IncDir)netidmgr\">
                         <Component Win64="$(var.Win64)" Id="cmp_dirinc_netidmgr" Guid="EBD8BA04-574A-4081-A994-BCEC8ACBC878" DiskId="1">
                             <File Id="fil_hashtable_h" LongName="hashtable.h" Name="HASHTABL.H" />
-                            <File Id="fil_kconfig_h" LongName="kconfig.h" Name="kconfig.h" /> 
-                            <File Id="fil_kcreddb_h" LongName="kcreddb.h" Name="kcreddb.h" /> 
-                            <File Id="fil_khaction_h" LongName="khaction.h" Name="khaction.h" /> 
-                            <File Id="fil_khactiondef_h" LongName="khactiondef.h" Name="KHACTDEF.H" /> 
-                            <File Id="fil_khalerts_h" LongName="khalerts.h" Name="khalerts.h" /> 
-                            <File Id="fil_khconfigui_h" LongName="khconfigui.h" Name="KHCONFUI.H" /> 
-                            <File Id="fil_khdefs_h" LongName="khdefs.h" Name="khdefs.h" /> 
-                            <File Id="fil_kherr_h" LongName="kherr.h" Name="kherr.h" /> 
-                            <File Id="fil_kherror_h" LongName="kherror.h" Name="kherror.h" /> 
-                            <File Id="fil_khhtlink_h" LongName="khhtlink.h" Name="khhtlink.h" /> 
-                            <File Id="fil_khlist_h" LongName="khlist.h" Name="khlist.h" /> 
-                            <File Id="fil_khmsgtypes_h" LongName="khmsgtypes.h" Name="KHMSGTYP.H" /> 
-                            <File Id="fil_khnewcred_h" LongName="khnewcred.h" Name="KHNEWCRD.H" /> 
-                            <File Id="fil_khprops_h" LongName="khprops.h" Name="khprops.h" /> 
-                            <File Id="fil_khremote_h" LongName="khremote.h" Name="khremote.h" /> 
-                            <File Id="fil_khrescache_h" LongName="khrescache.h" Name="KHRESCHE.H" /> 
+                            <File Id="fil_kconfig_h" LongName="kconfig.h" Name="kconfig.h" />
+                            <File Id="fil_kcreddb_h" LongName="kcreddb.h" Name="kcreddb.h" />
+                            <File Id="fil_khaction_h" LongName="khaction.h" Name="khaction.h" />
+                            <File Id="fil_khactiondef_h" LongName="khactiondef.h" Name="KHACTDEF.H" />
+                            <File Id="fil_khalerts_h" LongName="khalerts.h" Name="khalerts.h" />
+                            <File Id="fil_khconfigui_h" LongName="khconfigui.h" Name="KHCONFUI.H" />
+                            <File Id="fil_khdefs_h" LongName="khdefs.h" Name="khdefs.h" />
+                            <File Id="fil_kherr_h" LongName="kherr.h" Name="kherr.h" />
+                            <File Id="fil_kherror_h" LongName="kherror.h" Name="kherror.h" />
+                            <File Id="fil_khhtlink_h" LongName="khhtlink.h" Name="khhtlink.h" />
+                            <File Id="fil_khlist_h" LongName="khlist.h" Name="khlist.h" />
+                            <File Id="fil_khmsgtypes_h" LongName="khmsgtypes.h" Name="KHMSGTYP.H" />
+                            <File Id="fil_khnewcred_h" LongName="khnewcred.h" Name="KHNEWCRD.H" />
+                            <File Id="fil_khprops_h" LongName="khprops.h" Name="khprops.h" />
+                            <File Id="fil_khremote_h" LongName="khremote.h" Name="khremote.h" />
+                            <File Id="fil_khrescache_h" LongName="khrescache.h" Name="KHRESCHE.H" />
                             <File Id="fil_khtracker_h" LongName="khtracker.h" Name="KHTRACKR.H" />
                             <File Id="fil_khuidefs_h" LongName="khuidefs.h" Name="khuidefs.h" KeyPath="yes" />
                             <File Id="fil_kmm_h" LongName="kmm.h" Name="kmm.h" />
@@ -747,7 +747,7 @@
                             <File Id="fil_sync_h" LongName="sync.h" Name="sync.h" />
                             <File Id="fil_utils_h" LongName="utils.h" Name="utils.h" />
                             <File Id="fil_perfstat_h" LongName="perfstat.h" Name="perfstat.h" />
-                            <File Id="fil_netidmgr_h" LongName="netidmgr.h" Name="netidmgr.h" /> 
+                            <File Id="fil_netidmgr_h" LongName="netidmgr.h" Name="netidmgr.h" />
                             <File Id="fil_netidmgr_version_h" LongName="netidmgr_version.h" Name="netidmvr.h" />
                         </Component>
                     </Directory>
@@ -765,7 +765,7 @@
                         </Directory>
                     </Directory>
                 </Directory>
-                
+
                 <Directory Id="dirlib" Name="lib" src="$(var.LibDir)">
                    <?if $(var.Platform) = "Intel" ?>
                     <Directory Id="dirlib_i386" Name="i386" src="$(var.LibDir)">
@@ -805,7 +805,7 @@
                     </Directory>
                     <?endif?>
                 </Directory>
-                
+
                 <Directory Id="dirinstall" Name="install" src="$(var.InstallDir)">
                     <Directory Id="dirinstall_nsis" Name="nsis" src="$(var.InstallDir)nsis\">
                         <Component Win64="$(var.Win64)" Id="cmp_dirinstall_nsis" Guid="711C3910-5369-44f3-A023-E09E86A1C749" DiskId="1">
@@ -861,7 +861,7 @@
                         </Directory>
                     </Directory>
                 </Directory>
-                
+
                 <Directory Id="dirdoc" Name="doc" src="$(var.DocDir)">
                 <?if $(var.Platform) = "Intel" ?>
                     <Component Win64="$(var.Win64)" Id="efl_leash_userdoc_pdf" Guid="68FB24DD-5EC2-4db1-AD42-5B9DDEC247C5" DiskId="1">
@@ -925,7 +925,7 @@
                         </Directory>
                     </Directory>
                 </Directory>
-            
+
             </Directory> <!-- /Kerberos -->
         </Directory> <!-- /MIT -->
     </Directory> <!-- /Program Files -->
@@ -940,14 +940,14 @@
 	        <File Id="fil_krbrealm_con" LongName="krbrealm.con" Name="krbrealm.con" src="$(var.ConfigDir)krbrealm.con" KeyPath="yes" />
         </Component>
     </Directory>
-    
+
     <Directory Id="ProgramMenuFolder">
         <Directory Id="dirShortcut" LongName="$(var.BaseProductName)" Name="KFW">
         </Directory>
     </Directory>
     <Directory Id="StartupFolder">
     </Directory>
-    
+
     <Component Win64="$(var.Win64)" Id="rcm_common" Guid="486D84B6-CCE5-4b95-B8E2-7DFBDB4CF9A2">
         <Registry Id="reg_common0" Root="HKLM" Key="$(var.KfwRegRoot)" Action="createKeyAndRemoveKeyOnUninstall" />
         <Registry Id="reg_common1" Root="HKLM" Key="$(var.KfwRegRoot)" KeyPath="yes" />
@@ -962,7 +962,7 @@
         <Registry Id="reg_common8" Root="HKLM" Key="$(var.KfwRegRoot)\$(var.VersionString)" Action="removeKeyOnInstall"/>
     <?endif?>
     </Component>
-    
+
     <Component Win64="$(var.Win64)" Id="rcm_client" Guid="901179B2-7369-43b1-ACF3-4C7F37482CC7">
         <Registry Id="reg_client0" Root="HKLM" Key="$(var.KfwRegRoot)\Client" Action="createKeyAndRemoveKeyOnUninstall"/>
 
@@ -1014,7 +1014,7 @@
         <Registry Id="reg_sdk19" Root="HKLM" Key="$(var.KfwRegRoot)\SDK\$(var.VersionString)" Name="MinorVersion" Type="integer" Value="$(var.VersionMinor)" />
         <Registry Id="reg_sdk20" Root="HKLM" Key="$(var.KfwRegRoot)\SDK\$(var.VersionString)" Name="PatchLevel" Type="integer" Value="$(var.VersionPatch)" />
     </Component>
-    
+
     <Component Win64="$(var.Win64)" Id="rcm_docs" Guid="C7EADA0F-8FF7-4e7b-9372-5553BDD5812F">
         <Registry Id="reg_docs0" Root="HKLM" Key="$(var.KfwRegRoot)\Documentation" Action="createKeyAndRemoveKeyOnUninstall"/>
 
