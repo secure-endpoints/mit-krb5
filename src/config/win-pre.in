@@ -191,7 +191,6 @@ CP=copy/b nul:+
 MV=ren
 LN=copy
 LIBCMD=lib
-AWK=rem
 RC = rc
 CVTRES = cvtres
 
