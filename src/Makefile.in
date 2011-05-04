@@ -110,7 +110,7 @@ fake-install:
 TAGS: $(SRCS)
 	etags $(SRCS)
 
-clean-:: clean-windows
+clean:: clean-windows
 clean-unix::
 	$(RM) *.o core krb5-config
 	$(RM) -r util/fakedest
@@ -328,7 +328,7 @@ WINMAKEFILES=Makefile \
 ##DOS##windows\kfwlogon\Makefile: windows\kfwlogon\Makefile.in $(MKFDEP)
 ##DOS##	$(WCONFIG) config < $@.in > $@
 
-clean-windows:: Makefile-windows
+clean-windows:: Makefile-windows clean-windows-mac
 	@echo Making clean in util
 	cd util
 	$(MAKE) -$(MFLAGS) clean

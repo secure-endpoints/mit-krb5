@@ -199,6 +199,7 @@ clean-windows::
 ##WIN32##lib-windows:: krb5.lib gssapi.lib krb4.lib 
 
 ##WIN32##clean-windows::
+##WIN32##       $(RM) $(SDEF)
 ##WIN32##	@echo Making clean in lib\crypto
 ##WIN32##	cd crypto
 ##WIN32##	$(MAKE) -$(MFLAGS) clean
