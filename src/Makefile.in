@@ -549,8 +549,6 @@ clean-windows-mac:
 distclean-windows:
 	config\rm.bat $(CLEANUP:^/=^\)
 	config\rm.bat $(WINMAKEFILES)
-	config\rm.bat $(KBINDIR)\*.dll $(KBINDIR)\*.exe
-	@if exist $(KBINDIR)\nul rmdir $(KBINDIR)
 
 install-windows::
 	@if "$(KRB_INSTALL_DIR)"=="" @echo KRB_INSTALL_DIR is not defined!  Please define it.
