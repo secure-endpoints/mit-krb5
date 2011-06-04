@@ -365,7 +365,7 @@ os_get_default_config_files(profile_filespec_t **pfiles, krb5_boolean secure)
             files[i] = (i == 0 ? name : _strdup(name));
             name = p + 1;
         }
-        files[i] = (i == 0 ? name : _strdup(name));
+        files[i++] = (i == 0 ? name : _strdup(name));
     }
     if (name2)
         files[i++] = name2;
