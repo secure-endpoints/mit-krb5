@@ -27,9 +27,11 @@ all-windows::
         @echo Making in windows\kfwlogon
         cd ..\kfwlogon
         $(MAKE) -$(MFLAGS) 
+!if "$(KRB5_KFW_NIM)"=="1"
         @echo Making in windows\identity 
         cd ..\identity 
-        $(MAKE) -$(MFLAGS) 
+        $(MAKE) -$(MFLAGS)
+!endif
 !endif 
 	cd ..
 
@@ -56,9 +58,11 @@ clean-windows::
         @echo Making clean in windows\kfwlogon
         cd ..\kfwlogon
         $(MAKE) -$(MFLAGS) clean 
+!if "$(KRB5_KFW_NIM)"=="1"
         @echo Making clean in windows\identity 
         cd ..\identity 
-        $(MAKE) -$(MFLAGS) clean 
+        $(MAKE) -$(MFLAGS) clean
+!endif
 !endif 
 	cd ..
 
