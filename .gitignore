@@ -1,6 +1,9 @@
 /Makefile.src
 
+Makefile
 rs_state.ini
+*.pdb
+*.__!
 
 krb4inc/
 src/appl/gss-sample/obj/
