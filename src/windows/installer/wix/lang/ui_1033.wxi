@@ -47,7 +47,7 @@
   -->
 <Include xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
     <UI>
-      <Dialog Id="AdminWelcomeDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="AdminWelcomeDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_Next]">
           <Publish Property="InstallMode" Value="Server Image">1</Publish>
           <Publish Event="NewDialog" Value="AdminInstallPointDlg">1</Publish>
@@ -65,7 +65,7 @@
           <Text>{\VerdanaBold13}Welcome to the [ProductName] [Wizard]</Text>
         </Control>
       </Dialog>
-      <Dialog Id="ExitDialog" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="ExitDialog" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="Finish" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Cancel="yes" Text="[ButtonText_Finish]">
           <Publish Event="EndDialog" Value="Return">1</Publish>
         </Control>
@@ -80,7 +80,7 @@
           <Text>{\VerdanaBold13}Completing the [ProductName] [Wizard]</Text>
         </Control>
       </Dialog>
-      <Dialog Id="FatalError" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="FatalError" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="Finish" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Cancel="yes" Text="[ButtonText_Finish]">
           <Publish Event="EndDialog" Value="Exit">1</Publish>
         </Control>
@@ -98,7 +98,7 @@
           <Text>Click the Finish button to exit the [Wizard].</Text>
         </Control>
       </Dialog>
-      <Dialog Id="PrepareDlg" Width="370" Height="270" Title="[ProductName] [Setup]" Modeless="yes">
+      <Dialog Id="PrepareDlg" Width="380" Height="270" Title="[ProductName] [Setup]" Modeless="yes">
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Default="yes" Cancel="yes" Text="[ButtonText_Cancel]">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
@@ -119,7 +119,7 @@
           <Subscribe Event="ActionText" Attribute="Text" />
         </Control>
       </Dialog>
-      <Dialog Id="ProgressDlg" Width="370" Height="270" Title="[ProductName] [Setup]" Modeless="yes">
+      <Dialog Id="ProgressDlg" Width="380" Height="270" Title="[ProductName] [Setup]" Modeless="yes">
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Default="yes" Cancel="yes" Text="[ButtonText_Cancel]">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
         </Control>
@@ -142,7 +142,7 @@
         </Control>
         <Control Id="StatusLabel" Type="Text" X="35" Y="100" Width="35" Height="10" Text="Status:" />
       </Dialog>
-      <Dialog Id="UserExit" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="UserExit" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="Finish" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Cancel="yes" Text="[ButtonText_Finish]">
           <Publish Event="EndDialog" Value="Exit">1</Publish>
         </Control>
@@ -160,7 +160,7 @@
           <Text>Click the Finish button to exit the [Wizard].</Text>
         </Control>
       </Dialog>
-      <Dialog Id="AdminBrowseDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="AdminBrowseDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="PathEdit" Type="PathEdit" X="84" Y="202" Width="261" Height="17" Property="TARGETDIR" />
         <Control Id="OK" Type="PushButton" X="304" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_OK]">
           <Publish Event="SetTargetPath" Value="TARGETDIR">1</Publish>
@@ -192,7 +192,7 @@
           <Text>[DlgTitleFont]Change current destination folder</Text>
         </Control>
       </Dialog>
-      <Dialog Id="AdminInstallPointDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="AdminInstallPointDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="Text" Type="Text" X="25" Y="80" Width="320" Height="10" TabSkip="no">
           <Text>&amp;Enter a new network location or click Browse to browse to one.</Text>
         </Control>
@@ -328,7 +328,7 @@
           <Condition Action="hide">Installed</Condition>
         </Control>
       </Dialog>
-      <Dialog Id="DiskCostDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="DiskCostDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="OK" Type="PushButton" X="304" Y="243" Width="56" Height="17" Default="yes" Cancel="yes" Text="[ButtonText_OK]">
           <Publish Event="EndDialog" Value="Return">1</Publish>
         </Control>
@@ -433,7 +433,7 @@
       </Dialog>
 
 
-      <Dialog Id="CCPErrorDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" KeepModeless="yes">
+      <Dialog Id="CCPErrorDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" KeepModeless="yes">
 
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="[ButtonText_Back]" Disabled="yes">
         </Control>
@@ -457,7 +457,7 @@
         </Control>
       </Dialog>
 
-      <Dialog Id="LicenseAgreementDlg" Width="370" Height="270" Title="[ProductName] License Agreement" NoMinimize="yes">
+      <Dialog Id="LicenseAgreementDlg" Width="380" Height="270" Title="[ProductName] License Agreement" NoMinimize="yes">
         <Control Id="Buttons" Type="RadioButtonGroup" X="20" Y="187" Width="330" Height="40" Property="IAgree" />
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="[ButtonText_Back]">
           <Publish Event="NewDialog" Value="WelcomeDlg">1</Publish>
@@ -486,7 +486,7 @@
           <Text>[DlgTitleFont]End-User License Agreement</Text>
         </Control>
       </Dialog>
-      <Dialog Id="MaintenanceTypeDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="MaintenanceTypeDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="ChangeLabel" Type="Text" X="105" Y="65" Width="100" Height="10" TabSkip="no">
           <Text>[DlgTitleFont]&amp;Modify</Text>
         </Control>
@@ -540,7 +540,7 @@
           <Text>Repairs errors in the most recent installation state - fixes missing or corrupt files, shortcuts and registry entries.</Text>
         </Control>
       </Dialog>
-      <Dialog Id="MaintenanceWelcomeDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="MaintenanceWelcomeDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_Next]">
           <Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg">CostingComplete = 1</Publish>
           <Publish Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
@@ -558,7 +558,7 @@
           <Text>{\VerdanaBold13}Welcome to the [ProductName] [Wizard]</Text>
         </Control>
       </Dialog>
-      <Dialog Id="OutOfDiskDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="OutOfDiskDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="OK" Type="PushButton" X="304" Y="243" Width="56" Height="17" Default="yes" Cancel="yes" Text="[ButtonText_OK]">
           <Publish Event="EndDialog" Value="Return">1</Publish>
         </Control>
@@ -578,7 +578,7 @@
           <Text>{120}{70}{70}{70}{70}</Text>
         </Control>
       </Dialog>
-      <Dialog Id="OutOfRbDiskDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="OutOfRbDiskDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="No" Type="PushButton" X="304" Y="243" Width="56" Height="17" Default="yes" Cancel="yes" Text="[ButtonText_No]">
           <Publish Event="EndDialog" Value="Return">1</Publish>
         </Control>
@@ -605,7 +605,7 @@
           <Text>Alternatively, you may choose to disable the installer's rollback functionality.  This allows the installer to restore your computer's original state should the installation be interrupted in any way.  Click Yes if you wish to take the risk to disable rollback.</Text>
         </Control>
       </Dialog>
-      <Dialog Id="RemovePreviousDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="RemovePreviousDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="Confirm" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Confirm">
           <Publish Event="NewDialog" Value="SetupTypeDlg">1</Publish>
         </Control>
@@ -642,7 +642,7 @@
           <Condition Action="show">UPGRADENSIS &lt;&gt; ""</Condition>
         </Control>
       </Dialog>
-      <Dialog Id="ResumeDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="ResumeDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="Install" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_Install]">
           <Publish Event="SpawnWaitDialog" Value="WaitForCostingDlg">CostingComplete = 1</Publish>
           <Publish Event="EndDialog" Value="Return">OutOfDiskSpace &lt;&gt; 1</Publish>
@@ -664,7 +664,7 @@
           <Text>{\VerdanaBold13}Resuming the [ProductName] [Wizard]</Text>
         </Control>
       </Dialog>
-      <Dialog Id="SetupTypeDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="SetupTypeDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="TypicalLabel" Type="Text" X="105" Y="65" Width="100" Height="10" TabSkip="no">
           <Text>[DlgTitleFont]&amp;Typical</Text>
         </Control>
@@ -718,7 +718,7 @@
           <Text>Installs the most common program features. Recommended for most users.</Text>
         </Control>
       </Dialog>
-      <Dialog Id="UserRegistrationDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="UserRegistrationDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="NameLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;User Name:" />
         <Control Id="NameEdit" Type="Edit" X="45" Y="85" Width="220" Height="18" Property="USERNAME" Text="{80}" />
         <Control Id="OrganizationLabel" Type="Text" X="45" Y="110" Width="100" Height="15" TabSkip="no" Text="&amp;Organization:" />
@@ -749,7 +749,7 @@
         </Control>
       </Dialog>
 
-      <Dialog Id="KerberosOptions" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="KerberosOptions" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
 
 		<Control Id="txtLeash" Type="Text" X="25" Y="55" Width="280" Height="30">
 			<Text>The Network Identity Manager may be installed with the following optional functionality.  Please check those items that you wish to activate.</Text>
@@ -785,7 +785,7 @@
         </Control>
       </Dialog>
 
-      <Dialog Id="VerifyReadyDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" TrackDiskSpace="yes">
+      <Dialog Id="VerifyReadyDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" TrackDiskSpace="yes">
         <Control Id="Install" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_Install]">
           <Publish Event="EndDialog" Value="Return">OutOfDiskSpace &lt;&gt; 1</Publish>
           <Publish Event="SpawnDialog" Value="OutOfRbDiskDlg">OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND (PROMPTROLLBACKCOST="P" OR NOT PROMPTROLLBACKCOST)</Publish>
@@ -820,7 +820,7 @@
           <Text>[DlgTitleFont]Ready to Install</Text>
         </Control>
       </Dialog>
-      <Dialog Id="VerifyRemoveDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" TrackDiskSpace="yes">
+      <Dialog Id="VerifyRemoveDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" TrackDiskSpace="yes">
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_Back]">
           <Publish Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
         </Control>
@@ -848,7 +848,7 @@
           <Text>[DlgTitleFont]Remove Kerberos for Windows</Text>
         </Control>
       </Dialog>
-      <Dialog Id="VerifyRepairDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" TrackDiskSpace="yes">
+      <Dialog Id="VerifyRepairDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" TrackDiskSpace="yes">
         <Control Id="Repair" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_Repair]">
           <Publish Event="ReinstallMode" Value="ecmus">OutOfDiskSpace &lt;&gt; 1</Publish>
           <Publish Event="Reinstall" Value="All">OutOfDiskSpace &lt;&gt; 1</Publish>
@@ -886,7 +886,7 @@
         </Control>
         <Control Id="Icon" Type="Icon" X="15" Y="15" Width="24" Height="24" ToolTip="Exclamation icon" FixedSize="yes" IconSize="32" Text="[ExclamationIcon]" />
       </Dialog>
-      <Dialog Id="WelcomeDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
+      <Dialog Id="WelcomeDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes">
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_Next]">
           <Publish Event="NewDialog" Value="LicenseAgreementDlg">(Installed) Or (CCP_Success = 1)</Publish>
           <Publish Event="NewDialog" Value="CCPErrorDlg">(Not Installed) And (CCP_Success &lt;&gt; 1)</Publish>
