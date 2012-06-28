@@ -83,7 +83,9 @@
                  <ComponentRef Id="cmr_krb5_1" />
                  <ComponentRef Id="cmr_krb5_2" />
                  <ComponentRef Id="cmr_krb5_3" />
-                 <ComponentRef Id="cmf_krb5_ini" />
+                 <ComponentRef Id="cmf_krb5_conf" />
+                 <ComponentRef Id="cmf_krb5_conf_move" />
+                 <ComponentRef Id="cmf_krb5_ini_move" />
             </Feature>
 
             <Feature

@@ -172,6 +172,34 @@
          Return="ignore"
          Execute="rollback" />
 
+        <!-- Search for existing configuration files -->
+
+        <Property Id='LEGACYKRB5INI' Secure='yes'>
+           <DirectorySearch Id='dirSearchKrb5Ini' Depth='1' Path='[WindowsFolder]'>
+              <FileSearch Name='krb5.ini' />
+           </DirectorySearch>
+        </Property>
+
+        <Property Id='LEGACYKRB5CONF' Secure='yes'>
+           <DirectorySearch Id='dirSearchKrb5Conf' Depth='1' Path='[WindowsFolder]'>
+              <FileSearch LongName='krb5.conf' />
+           </DirectorySearch>
+        </Property>
+
+        <Property Id='LEGACYKRB5REG32' Secure='yes'>
+           <RegistrySearch Id='regSearchKrb5ConfUser' Key='Software\MIT\Kerberos' Name='config' Root='HKLM' Type='file' Win64='no'>
+              <FileSearch Name='krb5.ini' />
+           </RegistrySearch>
+        </Property>
+
+        <?if $(var.Platform)=x64 ?>
+           <Property Id='LEGACYKRB5REG64' Secure='yes'>
+              <RegistrySearch Id='regSearchKrb5ConfMach' Key='Software\MIT\Kerberos' Name='config' Root='HKLM' Type='file' Win64='yes'>
+                  <FileSearch Name='krb5.ini' />
+              </RegistrySearch>
+           </Property>
+        <?endif?>
+
 	<!-- Installation Sequences -->
 	<AdminExecuteSequence />
         <InstallExecuteSequence>

@@ -839,10 +839,54 @@
             </Directory> <!-- /Kerberos -->
         </Directory> <!-- /MIT -->
     </Directory> <!-- /Program Files -->
+    <Directory Id='CommonAppDataFolder' LongName='ProgramData' Name='PROGRA~3'>
+       <Directory Id='dirCommonKerberos' Name='Kerberos' FileSource='$(var.ConfigDir)'>
+
+          <Component Win64="$(var.Win64)" Id="cmf_krb5_conf" Guid="C1AF0670-BBF1-4AA6-B2A6-6C8B1584A1F4" NeverOverwrite="yes" Permanent="yes" DiskId="1">
+	    <File Id="fil_krb5_conf" LongName="krb5.conf" Name="krb5.cnf" src="$(var.ConfigDir)krb5.conf" KeyPath="yes" />
+            <Environment Id='KRB5_CONFIG_by_krb5.conf' Name='KRB5_CONFIG' Action='set' System='yes' Value='[#krb5_conf]' />
+            <!-- Backwards compatibility -->
+            <Registry Root='HKLM' Key='Software\MIT\Kerberos' Action='createKeyAndRemoveKeyOnUninstall' />
+            <Registry Root='HKLM' Key='Software\MIT\Kerberos' Name='config' Type='string' Value='[#krb5_conf]' />
+            <Condition>Not LEGACYKRB5INI And Not LEGACYKRB5CONF And Not LEGACYKRB5REG32 And Not LEGACYKRB5REG64</Condition>
+          </Component>
+
+          <Component Id='cmf_krb5_ini_move'
+                     Guid='316CB754-4332-4C02-95C1-4AC82590712D'>
+            <CopyFile Id='copy_krb5.ini' Delete='yes'
+                      DestinationDirectory='dirCommonKerberos'
+                      DestinationLongName='krb5.conf' DestinationName='krb5.cnf'
+                      SourceProperty='LEGACYKRB5INI' />
+            <Environment Id='KRB5_CONFIG_by_legacy_krb5.ini' Name='KRB5_CONFIG'
+                         Action='set' System='yes' Value='[dirCommonKerberos]krb5.conf' />
+            <Registry Root='HKLM' Key='Software\Heimdal\CurrentVersion' Action='createKeyAndRemoveKeyOnUninstall' />
+            <Registry Root='HKLM' Key='Software\Heimdal\CurrentVersion' Name='LegacyKrb5IniLocation' Type='string' Value='[LEGACYKRB5INI]' KeyPath='yes' />
+            <!-- Backwards compatibility -->
+            <Registry Root='HKLM' Key='Software\MIT\Kerberos' Action='createKeyAndRemoveKeyOnUninstall' />
+            <Registry Root='HKLM' Key='Software\MIT\Kerberos' Name='config' Type='string' Value='[dirCommonKerberos]krb5.conf' />
+            <Condition>LEGACYKRB5INI</Condition>
+          </Component>
+
+          <Component Id='cmf_krb5_conf_move'
+                     Guid='ADCE6801-0FD3-46E7-955A-FC9214CFE0AB'>
+            <CopyFile Id='copy_krb5.conf' Delete='yes'
+                      DestinationDirectory='dirCommonKerberos'
+                      DestinationLongName='krb5.conf' DestinationName='krb5.cnf'
+                      SourceProperty='LEGACYKRB5CONF' />
+            <Environment Id='KRB5_CONFIG_by_legacy_krb5.conf' Name='KRB5_CONFIG'
+                         Action='set' System='yes' Value='[dirCommonKerberos]krb5.conf' />
+            <Registry Root='HKLM' Key='Software\Heimdal\CurrentVersion' Action='createKeyAndRemoveKeyOnUninstall' />
+            <Registry Root='HKLM' Key='Software\Heimdal\CurrentVersion' Name='LegacyKrb5ConfLocation' Type='string' Value='[LEGACYKRB5CONF]' KeyPath='yes' />
+            <!-- Backwards compatibility -->
+            <Registry Root='HKLM' Key='Software\MIT\Kerberos' Action='createKeyAndRemoveKeyOnUninstall' />
+            <Registry Root='HKLM' Key='Software\MIT\Kerberos' Name='config' Type='string' Value='[dirCommonKerberos]krb5.conf' />
+            <Condition>LEGACYKRB5CONF</Condition>
+          </Component>
+
+        </Directory>
+      </Directory>
+
     <Directory Id="WindowsFolder">
-        <Component Win64="$(var.Win64)" Id="cmf_krb5_ini" Guid="C1AF0670-BBF1-4AA6-B2A6-6C8B1584A1F4" NeverOverwrite="yes" Permanent="yes" DiskId="1">
-	        <File Id="fil_krb5_ini" LongName="krb5.ini" Name="krb5.ini" src="$(var.ConfigDir)krb5.ini" KeyPath="yes" />
-        </Component>
 
         <?if $(var.Platform) = "Intel" ?>
         <Component Win64="$(var.Win64)" Id="cmf_krb_con" Guid="5E91A051-CF14-45FF-BF64-CEE78A7A90C2" NeverOverwrite="yes" Permanent="yes" DiskId="1">
