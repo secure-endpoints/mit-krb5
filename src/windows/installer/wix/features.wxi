@@ -129,39 +129,6 @@
 
                  <ComponentRef Id="cmf_leashw_dll" />
 
-                 <?ifndef BinsOnly?>
-                 <?if $(var.Platform) = "Intel" ?>
-                 <Feature
-                     Id="feaKfwClientLeashGui"
-                     AllowAdvertise="no"
-                     Description="$(loc.KerberosClientLeashGuiDesc)"
-                     InstallDefault="local"
-                     Title="$(loc.KerberosClientLeashGuiTitle)"
-                     Level="130">
-
-                     <ComponentRef Id="cmf_leash32_exe" />
-                     <ComponentRef Id="csc_leash32_exe" />
-                     <?ifdef OldHelp?>
-                     <ComponentRef Id="cmf_leash32_hlp" />
-                     <?else?>
-                     <ComponentRef Id="cmf_leash32_chm" />
-                     <?endif?>
-
-                     <!-- Leash config options -->
-                     <ComponentRef Id="cmr_leash_1" />
-                     <ComponentRef Id="cmr_leash_2" />
-                     <ComponentRef Id="cmr_leash_3" />
-                     <ComponentRef Id="cmr_leash_5" />
-                     <ComponentRef Id="cmr_leash_6" />
-
-                     <Feature Id="feaKfwLeashStartup" AllowAdvertise="no" Display="hidden" Level="130">
-                         <Condition Level="30">LEASHAUTOSTART = 1</Condition>
-                         <ComponentRef Id="csc_LeashStartup" />
-                     </Feature>
-                 </Feature>
-                 <?endif?>
-                 <?endif?>
-
                  <!-- Leash dll options -->
                  <ComponentRef Id="cmr_leashdll_1" />
                  <ComponentRef Id="cmr_leashdll_2" />
@@ -235,47 +202,8 @@
             </Feature>
             <?endif?>
 
-            <?ifndef BinsOnly?>
-            <Feature
-                 Id="feaKfwClientNetIdMgr"
-                 AllowAdvertise="no"
-                 Description="$(loc.KerberosClientNetIdMgrDesc)"
-                 InstallDefault="local"
-                 Title="$(loc.KerberosClientNetIdMgrTitle)"
-                 Level="130">
-
-                 <ComponentRef Id="cmf_netidmgr_exe" />
-                 <ComponentRef Id="cmf_nidmgr32_dll" />
-                 <?if $(var.Platform) = "Intel" ?>
-                     <ComponentRef Id="cmf_netidmgr_exe_w2k" />
-                     <ComponentRef Id="cmf_nidmgr32_dll_w2k" />
-                 <?endif?>
-                 <ComponentRef Id="cmf_krb5cred_dll" />
-                 <ComponentRef Id="cmf_krb5cred_en_us_dll" />
-
-                 <?if $(var.Platform) = "Intel" ?>
-                 <Feature
-                     Id="feaKfwClientNetIdMgrKrb4"
-                     AllowAdvertise="no"
-                     Description="$(loc.KerberosClientNetIdMgrKrb4Desc)"
-                     InstallDefault="local"
-                     Title="$(loc.KerberosClientNetIdMgrKrb4Title)"
-                     Level="130">
-
-                     <ComponentRef Id="cmf_krb4cred_dll" />
-                     <ComponentRef Id="cmf_krb4cred_en_us_dll" />
-                 </Feature>
-                 <?endif?>
-
-                 <Feature Id="feaKfwNetIdMgrStartup" AllowAdvertise="no" Display="hidden" Level="130">
-                     <Condition Level="30">LEASHAUTOSTART = 1</Condition>
-                     <ComponentRef Id="csc_NetIDMgrStartup" />
-                 </Feature>
-            </Feature>
-            <?endif?>
-
             <?ifdef DebugSyms?>
-	    	<Feature
+		<Feature
                     Id="feaKfwClientDebug"
                     AllowAdvertise="no"
                     Description="$(loc.StrKerberosClientDebugDesc)"
@@ -305,7 +233,6 @@
             Level="130"
             Title="$(loc.KerberosSDKTitle)">
 
-            <ComponentRef Id="cmp_dirdoc_netid" />
         <?if $(var.Platform) = "Intel" ?>
             <ComponentRef Id="cmp_dirinc_kclient" />
             <ComponentRef Id="cmp_dirinc_krb4" />
@@ -328,7 +255,6 @@
             <ComponentRef Id="cmp_dirinc_loadfuncs" />
             <ComponentRef Id="cmp_dirinc_wshelper" />
             <ComponentRef Id="cmp_dirinc_wshelper_arpa" />
-	    <ComponentRef Id="cmp_dirinc_netidmgr" />
             <ComponentRef Id="cmp_dirinstall_nsis" />
             <ComponentRef Id="cmp_dirinstall_wix" />
             <ComponentRef Id="cmp_dirinstall_wix_lang" />
@@ -354,7 +280,6 @@
             <?if $(var.Platform) = "Intel"?>
                     <ComponentRef Id="efl_leash_userdoc_pdf" />
             <?endif?>
-            <ComponentRef Id="efl_netidmgr_userdoc_pdf" />
             <ComponentRef Id="efl_relnotes_html" />
 
             <ComponentRef Id="cmr_common" />

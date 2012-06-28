@@ -85,8 +85,6 @@
 
         <!-- Launch conditions -->
         <Condition Message="$(loc.OsVersionRequired)">VersionNT &gt;= 500</Condition>
-        <Condition Message="$(loc.CMNotSelected)">USELEASH Or USENETIDMGR</Condition>
-        <Condition Message="$(loc.CMDupSelected)">Not (USELEASH And USENETIDMGR)</Condition>
         <?if $(var.Platform) = "x64" ?>
             <Condition Message="$(loc.StrPlatformBins32)">
                 <![CDATA[VersionNT64]]>

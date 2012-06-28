@@ -286,7 +286,11 @@
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_Next]">
           <Publish Event="NewDialog" Value="VerifyReadyDlg">( &amp;feaKfwClient &lt;&gt; 3 And !feaKfwClient &lt;&gt; 3 ) And Not FoundProcesses</Publish>
           <Publish Event="NewDialog" Value="RunningProcessDlg">( &amp;feaKfwClient &lt;&gt; 3 And !feaKfwClient &lt;&gt; 3 ) And FoundProcesses</Publish>
-          <Publish Event="NewDialog" Value="KerberosOptions">&amp;feaKfwClient = 3 Or !feaKfwClient = 3</Publish>
+          <!-- <Publish Event="NewDialog" Value="KerberosOptions">&amp;feaKfwClient = 3 Or !feaKfwClient = 3</Publish> -->
+
+          <Publish Event="NewDialog" Value="VerifyReadyDlg">Not FoundProcesses</Publish>
+          <Publish Event="NewDialog" Value="RunningProcessDlg">FoundProcesses</Publish>
+
           <Subscribe Event="SelectionNoItems" Attribute="Enabled" />
         </Control>
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="[ButtonText_Cancel]">
@@ -394,11 +398,15 @@
         <Control Id="List" Type="ListBox" X="20" Y="87" Width="330" Height="130" Property="FileInUseProcess" Sunken="yes" TabSkip="yes" />
       </Dialog>
 
-      <Dialog Id="RunningProcessDlg" Width="370" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" KeepModeless="yes">
+      <Dialog Id="RunningProcessDlg" Width="380" Height="270" Title="[ProductName] [Setup]" NoMinimize="yes" KeepModeless="yes">
 
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="[ButtonText_Back]">
           <Publish Event="NewDialog" Value="CustomizeDlg">(InstallMode = "Custom" OR InstallMode = "Change") AND &amp;feaKfwClient &lt;&gt; 3 And !feaKfwClient &lt;&gt; 3</Publish>
-          <Publish Event="NewDialog" Value="KerberosOptions">(InstallMode = "Custom" OR InstallMode = "Change") AND ( &amp;feaKfwClient = 3 Or !feaKfwClient = 3 )</Publish>
+        <!--  <Publish Event="NewDialog" Value="KerberosOptions">(InstallMode = "Custom" OR InstallMode = "Change") AND ( &amp;feaKfwClient = 3 Or !feaKfwClient = 3 )</Publish> -->
+
+          <Publish Event="NewDialog" Value="VerifyReadyDlg">Not FoundProcesses</Publish>
+          <Publish Event="NewDialog" Value="RunningProcessDlg">FoundProcesses</Publish>
+
           <Publish Event="NewDialog" Value="MaintenanceTypeDlg">InstallMode = "Repair"</Publish>
           <Publish Event="NewDialog" Value="SetupTypeDlg">InstallMode = "Typical" OR InstallMode = "Complete"</Publish>
         </Control>
@@ -761,8 +769,6 @@
         <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="[ButtonText_Next]">
           <Publish Event="NewDialog" Value="VerifyReadyDlg">Not FoundProcesses</Publish>
           <Publish Event="NewDialog" Value="RunningProcessDlg">FoundProcesses</Publish>
-          <Publish Event="AddLocal" Value="feaKfwLeashStartup">LEASHAUTOSTART = 1</Publish>
-          <Publish Event="Remove" Value="feaKfwLeashStartup">LEASHAUTOSTART &lt;&gt; 1</Publish>
         </Control>
         <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="[ButtonText_Cancel]">
           <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
@@ -794,7 +800,11 @@
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="[ButtonText_Back]">
           <Publish Event="NewDialog" Value="AdminInstallPointDlg">InstallMode = "Server Image"</Publish>
           <Publish Event="NewDialog" Value="CustomizeDlg">(InstallMode = "Custom" OR InstallMode = "Change") AND &amp;feaKfwClient &lt;&gt; 3 And !feaKfwClient &lt;&gt; 3</Publish>
-          <Publish Event="NewDialog" Value="KerberosOptions">(InstallMode = "Custom" OR InstallMode = "Change") AND ( &amp;feaKfwClient = 3 Or !feaKfwClient = 3 )</Publish>
+          <!-- <Publish Event="NewDialog" Value="KerberosOptions">(InstallMode = "Custom" OR InstallMode = "Change") AND ( &amp;feaKfwClient = 3 Or !feaKfwClient = 3 )</Publish> -->
+
+          <Publish Event="NewDialog" Value="VerifyReadyDlg">Not FoundProcesses</Publish>
+          <Publish Event="NewDialog" Value="RunningProcessDlg">FoundProcesses</Publish>
+
           <Publish Event="NewDialog" Value="MaintenanceTypeDlg">InstallMode = "Repair"</Publish>
           <Publish Event="NewDialog" Value="SetupTypeDlg">InstallMode = "Typical" OR InstallMode = "Complete"</Publish>
         </Control>
