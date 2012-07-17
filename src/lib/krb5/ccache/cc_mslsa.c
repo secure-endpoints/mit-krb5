@@ -575,9 +575,6 @@ IsMSSessionKeyNull(KERB_CRYPTO_KEY *mskey)
 {
     DWORD i;
 
-    if (is_process_uac_limited())
-	return TRUE;
-
     if (mskey->KeyType == KERB_ETYPE_NULL)
 	return TRUE;
 
