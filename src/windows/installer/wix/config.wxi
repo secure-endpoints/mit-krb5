@@ -82,6 +82,7 @@
     <?endif?>
 
     <?define KfwRegRoot="SOFTWARE\MIT\Kerberos"?>
+    <?define Krb5RegRoot="SOFTWARE\MIT\Kerberos5"?>
 
     <?define DocDir="$(var.TargetDir)doc\"?>
     <?define IncDir="$(var.TargetDir)inc\"?>
