@@ -3371,9 +3371,9 @@ krb5_lcc_retrieve(krb5_context context, krb5_ccache id, krb5_flags whichfields,
 
 
 /*
- * We can't write to the MS LSA cache.  So we request the cache to obtain a ticket for the same
+ * We can't write to the MS LSA cache.  So we request the LSA to obtain a ticket for the same
  * principal in the hope that next time the application requires a ticket for the service it
- * is attempt to store, the retrieved ticket will be good enough.
+ * attempted to store, the retrieved ticket will be good enough.
  *
  * Errors:
  * KRB5_CC_READONLY - not supported
