@@ -187,14 +187,14 @@
         </Property>
 
         <Property Id='LEGACYKRB5REG32' Secure='yes'>
-           <RegistrySearch Id='regSearchKrb5ConfUser' Key='Software\MIT\Kerberos' Name='config' Root='HKLM' Type='file' Win64='no'>
+           <RegistrySearch Id='regSearchKrb5ConfUser' Key='Software\MIT\Kerberos5' Name='config' Root='HKLM' Type='file' Win64='no'>
               <FileSearch Name='krb5.ini' />
            </RegistrySearch>
         </Property>
 
         <?if $(var.Platform)=x64 ?>
            <Property Id='LEGACYKRB5REG64' Secure='yes'>
-              <RegistrySearch Id='regSearchKrb5ConfMach' Key='Software\MIT\Kerberos' Name='config' Root='HKLM' Type='file' Win64='yes'>
+              <RegistrySearch Id='regSearchKrb5ConfMach' Key='Software\MIT\Kerberos5' Name='config' Root='HKLM' Type='file' Win64='yes'>
                   <FileSearch Name='krb5.ini' />
               </RegistrySearch>
            </Property>
