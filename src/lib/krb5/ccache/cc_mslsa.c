@@ -1597,17 +1597,6 @@ GetMSTGT( HANDLE LogonHandle, ULONG PackageId,
     int    ignore_cache = 0;
     krb5_enctype *etype_list = NULL, *ptr = NULL, etype = 0;
 
-#if 0
-    if (is_process_uac_limited()) {
-	Status = STATUS_ACCESS_DENIED;
-        ReportWinError(context, "GetMSTGT UAC Limited", TRUE, Status);
-#ifndef NODEBUG
-        OutputDebugStringA("cc_mslsa: GetMSTGT UAC Limited\n");
-#endif /* NODEBUG */
-        goto cleanup;
-    }
-#endif
-
     memset(&CacheRequest, 0, sizeof(KERB_QUERY_TKT_CACHE_REQUEST));
     CacheRequest.MessageType = KerbRetrieveTicketMessage;
     CacheRequest.LogonId.LowPart = 0;
@@ -2600,22 +2589,6 @@ krb5_lcc_resolve (krb5_context context, krb5_ccache *id, const char *residual)
 #endif /* NODEBUG */
         return KRB5_FCC_NOFILE;
     }
-
-#ifdef COMMENT
-    /* In at least one case on Win2003 it appears that it is possible
-     * for the logon session to be authenticated via NTLM and yet for
-     * there to be Kerberos credentials obtained by the LSA on behalf
-     * of the logged in user.  Therefore, we are removing this test
-     * which was meant to avoid the need to perform GetMSTGT() when
-     * there was no possibility of credentials being found.
-     */
-    if (!IsKerberosLogon()) {
-#ifndef NODEBUG
-        OutputDebugStringA("cc_mslsa: krb5_lcc_resolve MSLSA not Kerberos logon\n");
-#endif /* NODEBUG */
-        return KRB5_FCC_NOFILE;
-    }
-#endif
 
     if (!PackageConnectLookup(&LogonHandle, &PackageId, context)) {
 #ifndef NODEBUG
