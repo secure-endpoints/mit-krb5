@@ -127,6 +127,7 @@ static const int KerbSubmitTicketMessage = 26;
 
 #define MAX_MSG_SIZE 256
 #define MAX_MSPRINC_SIZE 1024
+#define KRB5_OK 0
 
 /* THREAD SAFETY
  * The functions is_windows_2000(), is_windows_xp(),
@@ -2117,17 +2118,19 @@ GetQueryTktCacheResponseEX2( HANDLE LogonHandle, ULONG PackageId,
 }
 #endif /* HAVE_CACHE_INFO_EX2 */
 
-static BOOL
+static krb5_error_code
 GetMSCacheTicketFromMITCred( HANDLE LogonHandle, ULONG PackageId,
                              krb5_context context, krb5_creds *creds,
                              PKERB_EXTERNAL_TICKET *ticket)
 {
+    DWORD dwError = ERROR_SUCCESS;
     NTSTATUS Status = 0;
     NTSTATUS SubStatus = 0;
     ULONG RequestSize;
     PKERB_RETRIEVE_TKT_REQUEST pTicketRequest = NULL;
     PKERB_RETRIEVE_TKT_RESPONSE pTicketResponse = NULL;
     ULONG ResponseSize;
+    krb5_error_code kret;
 
     RequestSize = sizeof(*pTicketRequest) + MAX_MSPRINC_SIZE;
 
@@ -2136,7 +2139,8 @@ GetMSCacheTicketFromMITCred( HANDLE LogonHandle, ULONG PackageId,
 #ifndef NODEBUG
         OutputDebugStringA("cc_mslsa: GetMSCacheTicketFromMITCred LocalAlloc failed\n");
 #endif /* NODEBUG */
-        return FALSE;
+        dwError = ERROR_NOT_ENOUGH_MEMORY;
+        goto _exit;
     }
     pTicketRequest->MessageType = KerbRetrieveEncodedTicketMessage;
     pTicketRequest->LogonId.LowPart = 0;
@@ -2170,7 +2174,8 @@ GetMSCacheTicketFromMITCred( HANDLE LogonHandle, ULONG PackageId,
 #ifndef NODEBUG
         OutputDebugStringA("cc_mslsa: GetMSCacheTicketFromMITCred KerbRetrieveEncodedTicketMessage failed (1)\n");
 #endif /* NODEBUG */
-        return FALSE;
+        dwError = LsaNtStatusToWinError(Status);
+        goto _exit;
     }
 
     if (FAILED(SubStatus))
@@ -2180,12 +2185,54 @@ GetMSCacheTicketFromMITCred( HANDLE LogonHandle, ULONG PackageId,
 #ifndef NODEBUG
         OutputDebugStringA("cc_mslsa: GetMSCacheTicketFromMITCred KerbRetrieveEncodedTicketMessage failed (2)\n");
 #endif /* NODEBUG */
-        return FALSE;
+        dwError = LsaNtStatusToWinError(SubStatus);
+        goto _exit;
+    }
+
+    if (IsMSSessionKeyNull(&pTicketResponse->Ticket.SessionKey) && is_process_uac_limited()) {
+        if ( context )
+            ReportWinError(context, "GetMSCacheTicketFromMITCred KerbRetrieveEncodedTicketMessage SubStatus", TRUE, STATUS_ACCESS_DENIED);
+#ifndef NODEBUG
+        OutputDebugStringA("cc_mslsa: GetMSCacheTicketFromMITCred KerbRetrieveEncodedTicketMessage failed (Access Denied)\n");
+#endif /* NODEBUG */
+        LsaFreeReturnBuffer(pTicketResponse);
+        dwError = ERROR_ACCESS_DENIED;
+        goto _exit;
     }
 
     /* otherwise return ticket */
     *ticket = &(pTicketResponse->Ticket);
-    return(TRUE);
+
+  _exit:
+    switch (dwError) {
+    case ERROR_SUCCESS:
+        kret = KRB5_OK;
+        break;
+    case ERROR_OUTOFMEMORY:
+        kret = KRB5_FCC_INTERNAL;
+        break;
+    case ERROR_ACCESS_DENIED:
+        kret = KRB5_FCC_PERM;
+        break;
+    case SEC_E_TIME_SKEW:
+        kret = KRB5KRB_AP_ERR_SKEW;
+        break;
+    case SEC_E_NO_IP_ADDRESSES:
+        kret = KRB5KRB_AP_ERR_BADADDR;
+        break;
+    case SEC_E_KDC_INVALID_REQUEST:
+        kret = KRB5KRB_ERR_GENERIC;
+        break;
+    case SEC_E_UNSUPPORTED_PREAUTH:
+        kret = KRB5KDC_ERR_PADATA_TYPE_NOSUPP;
+        break;
+    case SEC_E_KDC_UNKNOWN_ETYPE:
+        kret = KRB5KDC_ERR_ETYPE_NOSUPP;
+        break;
+    default:
+        kret = KRB5_CC_NOTFOUND;
+    }
+    return kret;
 }
 
 static BOOL
@@ -2502,8 +2549,6 @@ krb5_error_code krb5_change_cache (void);
 
 krb5_boolean
 krb5int_cc_creds_match_request(krb5_context, krb5_flags whichfields, krb5_creds *mcreds, krb5_creds *creds);
-
-#define KRB5_OK 0
 
 typedef struct _krb5_lcc_data {
     HANDLE LogonHandle;
@@ -3221,6 +3266,7 @@ krb5_lcc_retrieve(krb5_context context, krb5_ccache id, krb5_flags whichfields,
     KERB_EXTERNAL_TICKET *msticket = 0, *mstgt = 0, *mstmp = 0;
     krb5_creds * mcreds_noflags = 0;
     krb5_creds   fetchcreds;
+    DWORD dwError;
 
     if (!is_windows_2000() || is_broken_wow64()) {
         krb5_set_error_message( context, KRB5_FCC_NOFILE,
@@ -3255,12 +3301,18 @@ krb5_lcc_retrieve(krb5_context context, krb5_ccache id, krb5_flags whichfields,
     mcreds_noflags->ticket_flags = 0;
     mcreds_noflags->keyblock.enctype = 0;
 
-    if (!GetMSCacheTicketFromMITCred(data->LogonHandle, data->PackageId, context, mcreds_noflags, &msticket)) {
-        kret = KRB5_CC_NOTFOUND;
+    kret = GetMSCacheTicketFromMITCred(data->LogonHandle, data->PackageId, context, mcreds_noflags, &msticket);
+    if ( kret ) {
 #ifndef NODEBUG
-        OutputDebugStringA("cc_mslsa: krb5_lcc_retrieve GetMSCacheTicketFromMITCred failed\n");
+        OutputDebugStringA("cc_mslsa: krb5_lcc_retrieve GetMSCacheTicketFromMITCred failed (1)\n");
 #endif /* NODEBUG */
         goto cleanup;
+    }
+
+    /* Free this ticket as it will not be used */
+    if ( msticket ) {
+        LsaFreeReturnBuffer(msticket);
+        msticket = 0;
     }
 
     /* try again to find out if we have an existing ticket which meets the requirements */
@@ -3274,15 +3326,10 @@ krb5_lcc_retrieve(krb5_context context, krb5_ccache id, krb5_flags whichfields,
     /* if not, obtain a ticket using the request flags and enctype even though it may not
      * be stored in the LSA cache for future use.
      */
-    if ( msticket ) {
-        LsaFreeReturnBuffer(msticket);
-        msticket = 0;
-    }
-
-    if (!GetMSCacheTicketFromMITCred(data->LogonHandle, data->PackageId, context, mcreds, &msticket)) {
-        kret = KRB5_CC_NOTFOUND;
+    kret = GetMSCacheTicketFromMITCred(data->LogonHandle, data->PackageId, context, mcreds, &msticket);
+    if ( kret ) {
 #ifndef NODEBUG
-        OutputDebugStringA("cc_mslsa: krb5_lcc_retrieve GetMSCacheTicketFromMITCred failed\n");
+        OutputDebugStringA("cc_mslsa: krb5_lcc_retrieve GetMSCacheTicketFromMITCred failed (2)\n");
 #endif /* NODEBUG */
         goto cleanup;
     }
@@ -3348,6 +3395,7 @@ krb5_lcc_retrieve(krb5_context context, krb5_ccache id, krb5_flags whichfields,
      */
     if ( krb5int_cc_creds_match_request(context, whichfields, mcreds, &fetchcreds) ) {
         *creds = fetchcreds;
+        kret = KRB5_OK;
     } else {
         krb5_free_cred_contents(context, &fetchcreds);
         kret = KRB5_CC_NOTFOUND;
