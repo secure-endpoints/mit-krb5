@@ -805,7 +805,7 @@ does_retrieve_ticket_cache_ticket (void)
    {
        NTSTATUS Status = 0;
        NTSTATUS SubStatus = 0;
-       HANDLE LogonHandle;
+       HANDLE LogonHandle = 0;
        ULONG  PackageId;
        ULONG RequestSize;
        PKERB_RETRIEVE_TKT_REQUEST pTicketRequest = NULL;
@@ -849,6 +849,8 @@ does_retrieve_ticket_cache_ticket (void)
                                               );
 
        LocalFree(pTicketRequest);
+       if (pTicketResponse)
+           LsaFreeReturnBuffer(pTicketResponse);
        LsaDeregisterLogonProcess(LogonHandle);
 
        if (FAILED(Status) || FAILED(SubStatus)) {
@@ -885,7 +887,7 @@ does_query_ticket_cache_ex2 (void)
    {
        NTSTATUS Status = 0;
        NTSTATUS SubStatus = 0;
-       HANDLE LogonHandle;
+       HANDLE LogonHandle = 0;
        ULONG  PackageId;
        ULONG RequestSize;
        PKERB_QUERY_TKT_CACHE_REQUEST pCacheRequest = NULL;
@@ -923,6 +925,8 @@ does_query_ticket_cache_ex2 (void)
                                               );
 
        LocalFree(pCacheRequest);
+       if (pCacheResponse)
+           LsaFreeReturnBuffer(pCacheResponse);
        LsaDeregisterLogonProcess(LogonHandle);
 
        if (!(FAILED(Status) || FAILED(SubStatus))) {
@@ -2581,7 +2585,7 @@ krb5_lcc_resolve (krb5_context context, krb5_ccache *id, const char *residual)
 {
     krb5_ccache lid;
     krb5_lcc_data *data;
-    HANDLE LogonHandle;
+    HANDLE LogonHandle = 0;
     ULONG  PackageId;
     KERB_EXTERNAL_TICKET *msticket;
     krb5_error_code retval = KRB5_OK;
@@ -2777,6 +2781,7 @@ krb5_lcc_close(krb5_context context, krb5_ccache id)
         data = (krb5_lcc_data *) id->data;
 
         if (data) {
+            free(data->cc_name);
             LsaDeregisterLogonProcess(data->LogonHandle);
             krb5_xfree(data);
         }
