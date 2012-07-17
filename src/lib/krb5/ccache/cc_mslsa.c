@@ -2846,16 +2846,9 @@ krb5_lcc_start_seq_get(krb5_context context, krb5_ccache id, krb5_cc_cursor *cur
     data = (krb5_lcc_data *)id->data;
 
     /*
-     * obtain a tgt to refresh the ccache in case the ticket is expired
+     * obtain a tgt to refresh the ccache in case the ticket is expired.
      */
-    if (!GetMSTGT(data->LogonHandle, data->PackageId, context, &lcursor->mstgt, TRUE)) {
-        free(lcursor);
-        *cursor = 0;
-#ifndef NODEBUG
-        OutputDebugStringA("cc_mslsa: krb5_lcc_start_seq_get GetMSTGT failed\n");
-#endif /* NODEBUG */
-        return KRB5_CC_NOTFOUND;
-    }
+    GetMSTGT(data->LogonHandle, data->PackageId, context, &lcursor->mstgt, TRUE);
 
 #ifdef HAVE_CACHE_INFO_EX2
     if ( does_query_ticket_cache_ex2() ) {
