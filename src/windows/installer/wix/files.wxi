@@ -822,8 +822,8 @@
                       SourceProperty='LEGACYKRB5INI' />
             <Environment Id='KRB5_CONFIG_by_legacy_krb5.ini' Name='KRB5_CONFIG'
                          Action='set' System='yes' Value='[dirCommonKerberos]krb5.conf' />
-            <Registry Root='HKLM' Key='Software\Heimdal\CurrentVersion' Action='createKeyAndRemoveKeyOnUninstall' />
-            <Registry Root='HKLM' Key='Software\Heimdal\CurrentVersion' Name='LegacyKrb5IniLocation' Type='string' Value='[LEGACYKRB5INI]' KeyPath='yes' />
+            <Registry Root='HKLM' Key='$(var.KfwRegRoot)\CurrentVersion' Action='createKeyAndRemoveKeyOnUninstall' />
+            <Registry Root='HKLM' Key='$(var.KfwRegRoot)\CurrentVersion' Name='LegacyKrb5IniLocation' Type='string' Value='[LEGACYKRB5INI]' KeyPath='yes' />
             <!-- Backwards compatibility -->
             <Registry Root='HKLM' Key='$(var.Krb5RegRoot)' Action='createKeyAndRemoveKeyOnUninstall' />
             <Registry Root='HKLM' Key='$(var.Krb5RegRoot)' Name='config' Type='string' Value='[dirCommonKerberos]krb5.conf' />
@@ -838,8 +838,8 @@
                       SourceProperty='LEGACYKRB5CONF' />
             <Environment Id='KRB5_CONFIG_by_legacy_krb5.conf' Name='KRB5_CONFIG'
                          Action='set' System='yes' Value='[dirCommonKerberos]krb5.conf' />
-            <Registry Root='HKLM' Key='Software\Heimdal\CurrentVersion' Action='createKeyAndRemoveKeyOnUninstall' />
-            <Registry Root='HKLM' Key='Software\Heimdal\CurrentVersion' Name='LegacyKrb5ConfLocation' Type='string' Value='[LEGACYKRB5CONF]' KeyPath='yes' />
+            <Registry Root='HKLM' Key='$(var.KfwRegRoot)\CurrentVersion' Action='createKeyAndRemoveKeyOnUninstall' />
+            <Registry Root='HKLM' Key='$(var.KfwRegRoot)\CurrentVersion' Name='LegacyKrb5ConfLocation' Type='string' Value='[LEGACYKRB5CONF]' KeyPath='yes' />
             <!-- Backwards compatibility -->
             <Registry Root='HKLM' Key='$(var.Krb5RegRoot)' Action='createKeyAndRemoveKeyOnUninstall' />
             <Registry Root='HKLM' Key='$(var.Krb5RegRoot)' Name='config' Type='string' Value='[dirCommonKerberos]krb5.conf' />
