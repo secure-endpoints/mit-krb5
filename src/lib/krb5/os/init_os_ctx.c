@@ -323,6 +323,13 @@ os_get_default_config_files(profile_filespec_t **pfiles, krb5_boolean secure)
         if (retval && retval != KRB5_CONFIG_CANTOPEN)
             return retval;
     }
+    if (!name)
+    {
+        /* program data dir */
+        retval = get_from_program_data_dir(&name, &name2);
+        if (retval && retval != KRB5_CONFIG_CANTOPEN)
+            return retval;
+    }
     if (!name && !secure)
     {
         /* module dir */
@@ -334,13 +341,6 @@ os_get_default_config_files(profile_filespec_t **pfiles, krb5_boolean secure)
     {
         /* windows dir - for compatibility (deprecated in 2000 and above) */
         retval = get_from_windows_dir(&name);
-        if (retval && retval != KRB5_CONFIG_CANTOPEN)
-            return retval;
-    }
-    if (!name)
-    {
-        /* program data dir */
-        retval = get_from_program_data_dir(&name, &name2);
         if (retval && retval != KRB5_CONFIG_CANTOPEN)
             return retval;
     }
