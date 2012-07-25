@@ -802,7 +802,7 @@
             </Directory> <!-- /Kerberos -->
         </Directory> <!-- /MIT -->
     </Directory> <!-- /Program Files -->
-    <Directory Id='CommonAppDataFolder' LongName='ProgramData' Name='PROGRA~3'>
+    <Directory Id="CommonAppDataFolder">
        <Directory Id='dirCommonKerberos' Name='Kerberos' FileSource='$(var.ConfigDir)'>
 
           <Component Win64="$(var.Win64)" Id="cmf_krb5_conf" Guid="C1AF0670-BBF1-4AA6-B2A6-6C8B1584A1F4" NeverOverwrite="yes" Permanent="yes" DiskId="1">
