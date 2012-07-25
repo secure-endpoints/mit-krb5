@@ -92,7 +92,6 @@ krb5_get_default_realm(krb5_context context, char **lrealm)
          * XXX should try to figure out a reasonable default based
          * on the host's DNS domain.
          */
-        context->default_realm = 0;
         if (context->profile != 0) {
             retval = profile_get_string(context->profile, "libdefaults",
                                         "default_realm", 0, 0,
@@ -151,11 +150,13 @@ krb5_get_default_realm(krb5_context context, char **lrealm)
             if (retval) {
                 return(KRB5_CONFIG_NODEFREALM);
             }
+
+            if (context->default_realm != NULL &&
+                 context->default_realm[0] == 0) {
+                free (context->default_realm);
+                context->default_realm = 0;
+            }
         }
-    }
-    if (context->default_realm[0] == 0) {
-        free (context->default_realm);
-        context->default_realm = 0;
     }
 #endif /* KRB5_DNS_LOOKUP */
 #ifdef _WIN32
