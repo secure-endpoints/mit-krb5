@@ -2292,9 +2292,11 @@ GetMSCacheTicketFromCacheInfoW2K( HANDLE LogonHandle, ULONG PackageId,
 
     /* set the initial flag if we were attempting to retrieve one
      * because Windows won't necessarily return the initial ticket
-     * to us.
+     * to us.  but don't set it if the ticket response is a forwarded
+     * ticket because that is an invalid combination.
      */
-    if ( tktinfo->TicketFlags & KERB_TICKET_FLAGS_initial )
+    if ( (tktinfo->TicketFlags & KERB_TICKET_FLAGS_initial) &&
+         !((*ticket)->TicketFlags & KERB_TICKET_FLAGS_forwarded) )
         (*ticket)->TicketFlags |= KERB_TICKET_FLAGS_initial;
 
     return(TRUE);
@@ -2377,9 +2379,11 @@ GetMSCacheTicketFromCacheInfoXP( HANDLE LogonHandle, ULONG PackageId,
 
     /* set the initial flag if we were attempting to retrieve one
      * because Windows won't necessarily return the initial ticket
-     * to us.
+     * to us.  but don't set it if the ticket response is a forwarded
+     * ticket because that is an invalid combination.
      */
-    if ( tktinfo->TicketFlags & KERB_TICKET_FLAGS_initial )
+    if ( (tktinfo->TicketFlags & KERB_TICKET_FLAGS_initial) &&
+         !((*ticket)->TicketFlags & KERB_TICKET_FLAGS_forwarded) )
         (*ticket)->TicketFlags |= KERB_TICKET_FLAGS_initial;
 
     return(TRUE);
@@ -2463,11 +2467,13 @@ GetMSCacheTicketFromCacheInfoEX2( HANDLE LogonHandle, ULONG PackageId,
 
 
     /* set the initial flag if we were attempting to retrieve one
-    * because Windows won't necessarily return the initial ticket
-    * to us.
-    */
-   if ( tktinfo->TicketFlags & KERB_TICKET_FLAGS_initial )
-       (*ticket)->TicketFlags |= KERB_TICKET_FLAGS_initial;
+     * because Windows won't necessarily return the initial ticket
+     * to us.  but don't set it if the ticket response is a forwarded
+     * ticket because that is an invalid combination.
+     */
+    if ( (tktinfo->TicketFlags & KERB_TICKET_FLAGS_initial) &&
+         !((*ticket)->TicketFlags & KERB_TICKET_FLAGS_forwarded) )
+        (*ticket)->TicketFlags |= KERB_TICKET_FLAGS_initial;
 
     return(TRUE);
 }
