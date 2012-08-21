@@ -1965,8 +1965,11 @@ GetMSTGT( HANDLE LogonHandle, ULONG PackageId,
         // 0 is supported.)
         pTicketRequest->EncryptionType = etype;
         pTicketRequest->CacheOptions = 0;
-        if ( does_retrieve_ticket_cache_ticket() )
-            pTicketRequest->CacheOptions |= KERB_RETRIEVE_TICKET_CACHE_TICKET;
+
+        // Never use KERB_RETRIEVE_TICKET_CACHE_TICKET when attempting to retrieve
+        // a TGT with a specific enctype.  Doing so results in confusion for the
+        // LSA because it does not handle the case in which more than one ticket
+        // with the same name can exist in the cache.
 
         if ( pTicketResponse ) {
             memset(pTicketResponse,0,sizeof(KERB_RETRIEVE_TKT_RESPONSE));
@@ -2239,11 +2242,23 @@ GetMSCacheTicketFromMITCred( HANDLE LogonHandle, ULONG PackageId,
     pTicketRequest->TargetName.MaximumLength = MAX_MSPRINC_SIZE;
     pTicketRequest->TargetName.Buffer = (PWSTR) (pTicketRequest + 1);
     MITPrincToMSPrinc(context, creds->server, &pTicketRequest->TargetName);
-    pTicketRequest->CacheOptions = 0;
-    if ( does_retrieve_ticket_cache_ticket() )
-        pTicketRequest->CacheOptions |= KERB_RETRIEVE_TICKET_CACHE_TICKET;
-    pTicketRequest->TicketFlags = creds->ticket_flags;
+    pTicketRequest->TicketFlags = 0;
+    if ( creds->ticket_flags & TKT_FLG_FORWARDABLE)
+        pTicketRequest->TicketFlags |= KDC_OPT_FORWARDABLE;
+    if ( creds->ticket_flags & TKT_FLG_FORWARDED )
+        pTicketRequest->TicketFlags |= KDC_OPT_FORWARDED;
+    if ( creds->ticket_flags & TKT_FLG_PROXIABLE )
+        pTicketRequest->TicketFlags |= KDC_OPT_PROXIABLE;
+    if ( creds->ticket_flags & TKT_FLG_RENEWABLE )
+        pTicketRequest->TicketFlags |= KDC_OPT_RENEWABLE;
     pTicketRequest->EncryptionType = creds->keyblock.enctype;
+
+    pTicketRequest->CacheOptions = 0;
+    if ( does_retrieve_ticket_cache_ticket() &&
+         !(creds->ticket_flags & TKT_FLG_FORWARDABLE ||
+           creds->ticket_flags & TKT_FLG_FORWARDED ||
+           creds->ticket_flags & TKT_FLG_INITIAL))
+        pTicketRequest->CacheOptions |= KERB_RETRIEVE_TICKET_CACHE_TICKET;
 
     Status = LsaCallAuthenticationPackage( LogonHandle,
                                            PackageId,
@@ -2353,7 +2368,10 @@ GetMSCacheTicketFromCacheInfoW2K( HANDLE LogonHandle, ULONG PackageId,
     pTicketRequest->TargetName.Buffer = (PWSTR) (pTicketRequest + 1);
     memcpy(pTicketRequest->TargetName.Buffer,tktinfo->ServerName.Buffer, tktinfo->ServerName.Length);
     pTicketRequest->CacheOptions = 0;
-    if ( does_retrieve_ticket_cache_ticket() )
+    if ( does_retrieve_ticket_cache_ticket() &&
+         !(tktinfo->TicketFlags & KERB_TICKET_FLAGS_forwardable ||
+           tktinfo->TicketFlags & KERB_TICKET_FLAGS_forwarded ||
+           tktinfo->TicketFlags & KERB_TICKET_FLAGS_initial))
         pTicketRequest->CacheOptions |= KERB_RETRIEVE_TICKET_CACHE_TICKET;
     pTicketRequest->EncryptionType = tktinfo->EncryptionType;
     pTicketRequest->TicketFlags = 0;
@@ -2529,7 +2547,10 @@ GetMSCacheTicketFromCacheInfoEX2( HANDLE LogonHandle, ULONG PackageId,
     pTicketRequest->TargetName.MaximumLength = tktinfo->ServerName.Length;
     pTicketRequest->TargetName.Buffer = (PWSTR) (pTicketRequest + 1);
     memcpy(pTicketRequest->TargetName.Buffer,tktinfo->ServerName.Buffer, tktinfo->ServerName.Length);
-    pTicketRequest->CacheOptions = KERB_RETRIEVE_TICKET_CACHE_TICKET;
+    if ( !(tktinfo->TicketFlags & KERB_TICKET_FLAGS_forwardable ||
+           tktinfo->TicketFlags & KERB_TICKET_FLAGS_forwarded ||
+           tktinfo->TicketFlags & KERB_TICKET_FLAGS_initial))
+        pTicketRequest->CacheOptions = KERB_RETRIEVE_TICKET_CACHE_TICKET;
     pTicketRequest->EncryptionType = tktinfo->SessionKeyType;
     pTicketRequest->TicketFlags = 0;
     if ( tktinfo->TicketFlags & KERB_TICKET_FLAGS_forwardable )
