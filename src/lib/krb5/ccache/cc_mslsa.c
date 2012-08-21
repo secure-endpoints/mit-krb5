@@ -225,6 +225,36 @@ is_windows_vista (void)
 }
 
 static BOOL
+is_windows_7 (void)
+{
+    static BOOL fChecked = FALSE;
+    static BOOL fIsWin7 = FALSE;
+
+    if (!fChecked)
+    {
+	OSVERSIONINFO Version;
+
+	memset (&Version, 0x00, sizeof(Version));
+	Version.dwOSVersionInfoSize = sizeof(Version);
+
+	if (GetVersionEx (&Version))
+	{
+	    if (Version.dwPlatformId == VER_PLATFORM_WIN32_NT &&
+                (Version.dwMajorVersion > 6 ||
+                 Version.dwMajorVersion >= 6 && Version.dwMinorVersion >= 1))
+		fIsWin7 = TRUE;
+#ifndef NODEBUG
+            if (fIsWin7)
+                OutputDebugStringA("cc_mslsa: is Win7\n");
+#endif /* NODEBUG */
+	}
+	fChecked = TRUE;
+    }
+
+    return fIsWin7;
+}
+
+static BOOL
 is_process_uac_limited (void)
 {
     static BOOL fChecked = FALSE;
