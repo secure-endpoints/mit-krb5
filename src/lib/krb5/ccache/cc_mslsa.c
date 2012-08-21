@@ -778,7 +778,88 @@ CacheInfoEx2ToMITCred(KERB_TICKET_CACHE_INFO_EX2 *info,
 
     return TRUE;
 }
+
+static BOOL
+IsTGTEX2(KERB_TICKET_CACHE_INFO_EX2 *info)
+{
+    if ( info->ClientRealm.Length != info->ServerRealm.Length )
+        return FALSE;
+
+    /* NUL in place of L'/' */
+    if ( info->ServerName.Length != sizeof(L"krbtgt") + info->ServerRealm.Length )
+        return FALSE;
+
+    if ( memcmp( info->ClientRealm.Buffer, info->ServerRealm.Buffer, info->ServerRealm.Length) )
+        return FALSE;
+
+    if ( memcmp( L"krbtgt", info->ServerName.Buffer, sizeof(L"krbtgt") - sizeof(WCHAR)) )
+        return FALSE;
+
+    if ( info->ServerName.Buffer[(sizeof(L"krbtgt") - sizeof(WCHAR))/sizeof(WCHAR)] != L'/' )
+        return FALSE;
+
+    if ( memcmp( &info->ServerName.Buffer[sizeof(L"krbtgt")/sizeof(WCHAR)],
+                 info->ServerRealm.Buffer,
+                 info->ServerName.Length - sizeof(L"krbtgt")) )
+        return FALSE;
+
+    return TRUE;
+}
 #endif /* HAVE_CACHE_INFO_EX2 */
+
+static BOOL
+IsTGTXP(KERB_TICKET_CACHE_INFO_EX *info)
+{
+    if ( info->ClientRealm.Length != info->ServerRealm.Length )
+        return FALSE;
+
+    /* NUL in place of L'/' */
+    if ( info->ServerName.Length != sizeof(L"krbtgt") + info->ServerRealm.Length )
+        return FALSE;
+
+    if ( memcmp( info->ClientRealm.Buffer, info->ServerRealm.Buffer, info->ServerRealm.Length) )
+        return FALSE;
+
+    if ( memcmp( L"krbtgt", info->ServerName.Buffer, sizeof(L"krbtgt") - sizeof(WCHAR)) )
+        return FALSE;
+
+    if ( info->ServerName.Buffer[(sizeof(L"krbtgt") - sizeof(WCHAR))/sizeof(WCHAR)] != L'/' )
+        return FALSE;
+
+    if ( memcmp( &info->ServerName.Buffer[sizeof(L"krbtgt")/sizeof(WCHAR)],
+                 info->ServerRealm.Buffer,
+                 info->ServerName.Length - sizeof(L"krbtgt")) )
+        return FALSE;
+
+    return TRUE;
+}
+
+static BOOL
+IsTGTW2K(PKERB_EXTERNAL_TICKET mstgt, KERB_TICKET_CACHE_INFO *info)
+{
+    if ( mstgt->DomainName.Length != info->RealmName.Length )
+        return FALSE;
+
+    /* NUL in place of L'/' */
+    if ( info->ServerName.Length != sizeof(L"krbtgt") + info->RealmName.Length )
+        return FALSE;
+
+    if ( memcmp( mstgt->DomainName.Buffer, info->RealmName.Buffer, info->RealmName.Length) )
+        return FALSE;
+
+    if ( memcmp( L"krbtgt", info->ServerName.Buffer, sizeof(L"krbtgt") - sizeof(WCHAR)) )
+        return FALSE;
+
+    if ( info->ServerName.Buffer[(sizeof(L"krbtgt") - sizeof(WCHAR))/sizeof(WCHAR)] != L'/' )
+        return FALSE;
+
+    if ( memcmp( &info->ServerName.Buffer[sizeof(L"krbtgt")/sizeof(WCHAR)],
+                 info->RealmName.Buffer,
+                 info->ServerName.Length - sizeof(L"krbtgt")) )
+        return FALSE;
+
+    return TRUE;
+}
 
 static BOOL
 PackageConnectLookup(HANDLE *pLogonHandle, ULONG *pPackageId, krb5_context context)
