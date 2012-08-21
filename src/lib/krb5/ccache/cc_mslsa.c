@@ -3080,15 +3080,35 @@ krb5_lcc_next_cred(krb5_context context, krb5_ccache id, krb5_cc_cursor *cursor,
 #ifdef HAVE_CACHE_INFO_EX2
         if ( does_query_ticket_cache_ex2() ) {
             if ( lcursor->index >= lcursor->response.ex2->CountOfTickets ) {
-                if (retval == KRB5_OK)
-                    return KRB5_CC_END;
-                else {
+                if (retval != KRB5_OK) {
                     LsaFreeReturnBuffer(lcursor->mstgt);
                     LsaFreeReturnBuffer(lcursor->response.ex2);
                     free(*cursor);
                     *cursor = 0;
-                    return KRB5_CC_END;
                 }
+                return KRB5_CC_END;
+            }
+
+            /*
+             * If TGT is an initial ticket, must skip any TGT with the forwarded flag set
+             * in the response set.  The LSA will obtain a forwarded TGT to use for unconstrained
+             * delegation but this TGT is not useful on the initiator system.  While it is
+             * listed in the response set, it should not be requested as the LSA does not want
+             * to expose it.  If a forwarded TGT is requested via this interface, a new forwarded
+             * TGT will be obtained from the KDC and it will be returned in place of the initial
+             * TGT in the future.  This is a problem because Server 2003 DCs will not renew forwarded
+             * TGTs.  There may be other side effects as well.
+             *
+             * Filtering out all forwarded TGTs is not an acceptable solution because on an
+             * acceptor system that received delegated credentials there will only be a forwarded
+             * TGT and no initial TGT.  In that case, the forwarded TGT must be used.
+             */
+
+            if ( (lcursor->mstgt->TicketFlags & KERB_TICKET_FLAGS_initial) &&
+                 (lcursor->response.ex2->Tickets[lcursor->index].TicketFlags & KERB_TICKET_FLAGS_forwarded) &&
+                 IsTGTEX2(&lcursor->response.ex2->Tickets[lcursor->index])) {
+                lcursor->index++;
+                continue;
             }
 
             if ( data->flags & KRB5_TC_NOTICKET ) {
@@ -3099,7 +3119,7 @@ krb5_lcc_next_cred(krb5_context context, krb5_ccache id, krb5_cc_cursor *cursor,
                 return KRB5_OK;
             } else {
                 if (!GetMSCacheTicketFromCacheInfoEX2( data->LogonHandle, data->PackageId, context,
-                                                       &lcursor->response.ex2->Tickets[lcursor->index++],&msticket)) {
+                                                       &lcursor->response.ex2->Tickets[lcursor->index++], &msticket)) {
                     continue;
                 }
             }
@@ -3107,36 +3127,77 @@ krb5_lcc_next_cred(krb5_context context, krb5_ccache id, krb5_cc_cursor *cursor,
 #endif /* HAVE_CACHE_INFO_EX2 */
         if ( is_windows_xp() ) {
             if ( lcursor->index >= lcursor->response.xp->CountOfTickets ) {
-                if (retval == KRB5_OK)
-                    return KRB5_CC_END;
-                else {
+                if (retval != KRB5_OK) {
                     LsaFreeReturnBuffer(lcursor->mstgt);
                     LsaFreeReturnBuffer(lcursor->response.xp);
                     free(*cursor);
                     *cursor = 0;
-                    return KRB5_CC_END;
                 }
+                return KRB5_CC_END;
             }
 
+            /*
+             * If TGT is an initial ticket, must skip any TGT with the forwarded flag set
+             * in the response set.  The LSA will obtain a forwarded TGT to use for unconstrained
+             * delegation but this TGT is not useful on the initiator system.  While it is
+             * listed in the response set, it should not be requested as the LSA does not want
+             * to expose it.  If a forwarded TGT is requested via this interface, a new forwarded
+             * TGT will be obtained from the KDC and it will be returned in place of the initial
+             * TGT in the future.  This is a problem because Server 2003 DCs will not renew forwarded
+             * TGTs.  There may be other side effects as well.
+             *
+             * Filtering out all forwarded TGTs is not an acceptable solution because on an
+             * acceptor system that received delegated credentials there will only be a forwarded
+             * TGT and no initial TGT.  In that case, the forwarded TGT must be used.
+             */
+
+            if ( (lcursor->mstgt->TicketFlags & KERB_TICKET_FLAGS_initial) &&
+                 (lcursor->response.xp->Tickets[lcursor->index].TicketFlags & KERB_TICKET_FLAGS_forwarded) &&
+                 IsTGTXP(&lcursor->response.xp->Tickets[lcursor->index])) {
+                lcursor->index++;
+                continue;
+            }
+
+
             if (!GetMSCacheTicketFromCacheInfoXP( data->LogonHandle, data->PackageId, context,
-                                                  &lcursor->response.xp->Tickets[lcursor->index++],&msticket)) {
+                                                  &lcursor->response.xp->Tickets[lcursor->index++], &msticket)) {
                 continue;
             }
         } else {
             if ( lcursor->index >= lcursor->response.w2k->CountOfTickets ) {
-                if (retval == KRB5_OK)
-                    return KRB5_CC_END;
-                else {
+                if (retval != KRB5_OK) {
                     LsaFreeReturnBuffer(lcursor->mstgt);
                     LsaFreeReturnBuffer(lcursor->response.w2k);
                     free(*cursor);
                     *cursor = 0;
-                    return KRB5_CC_END;
                 }
+                return KRB5_CC_END;
+            }
+
+            /*
+             * If TGT is an initial ticket, must skip any TGT with the forwarded flag set
+             * in the response set.  The LSA will obtain a forwarded TGT to use for unconstrained
+             * delegation but this TGT is not useful on the initiator system.  While it is
+             * listed in the response set, it should not be requested as the LSA does not want
+             * to expose it.  If a forwarded TGT is requested via this interface, a new forwarded
+             * TGT will be obtained from the KDC and it will be returned in place of the initial
+             * TGT in the future.  This is a problem because Server 2003 DCs will not renew forwarded
+             * TGTs.  There may be other side effects as well.
+             *
+             * Filtering out all forwarded TGTs is not an acceptable solution because on an
+             * acceptor system that received delegated credentials there will only be a forwarded
+             * TGT and no initial TGT.  In that case, the forwarded TGT must be used.
+             */
+
+            if ( (lcursor->mstgt->TicketFlags & KERB_TICKET_FLAGS_initial) &&
+                 (lcursor->response.w2k->Tickets[lcursor->index].TicketFlags & KERB_TICKET_FLAGS_forwarded) &&
+                 IsTGTW2K(lcursor->mstgt, &lcursor->response.w2k->Tickets[lcursor->index])) {
+                lcursor->index++;
+                continue;
             }
 
             if (!GetMSCacheTicketFromCacheInfoW2K( data->LogonHandle, data->PackageId, context,
-                                                   &lcursor->response.w2k->Tickets[lcursor->index++],&msticket)) {
+                                                   &lcursor->response.w2k->Tickets[lcursor->index++], &msticket)) {
                 continue;
             }
         }
@@ -3360,7 +3421,6 @@ krb5_lcc_retrieve(krb5_context context, krb5_ccache id, krb5_flags whichfields,
     KERB_EXTERNAL_TICKET *msticket = 0, *mstgt = 0, *mstmp = 0;
     krb5_creds * mcreds_noflags = 0;
     krb5_creds   fetchcreds;
-    DWORD dwError;
 
     if (!is_windows_2000() || is_broken_wow64()) {
         krb5_set_error_message( context, KRB5_FCC_NOFILE,
