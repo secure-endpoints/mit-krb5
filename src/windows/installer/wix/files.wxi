@@ -652,7 +652,6 @@
                             <File Id="fil_loadfuncs_32_lib" LongName="loadfuncs.lib" Name="LOADFUNC.LIB" />
                             <File Id="fil_wshelp32_lib" LongName="wshelp32.lib" Name="wshelp32.lib" />
                             <File Id="fil_xpprof32_lib" LongName="xpprof32.lib" Name="xpprof32.lib" />
-                            <File Id="fil_nidmgr32_lib" LongName="nidmgr32.lib" Name="nidmgr32.lib" />
                         </Component>
                         <?ifndef NoCygwin?>
                         <Component Win64="$(var.Win64)" Id="cmp_dirlib_i386_cygwin" Guid="8733A094-303B-4024-A5C7-82FF47567BE3" DiskId="1">
@@ -677,7 +676,6 @@
                             <File Id="fil_loadfuncs_64_lib" LongName="loadfuncs.lib" Name="LOADFUNC.LIB" />
                             <File Id="fil_wshelp64_lib" LongName="wshelp64.lib" Name="wshelp64.lib" />
                             <File Id="fil_xpprof64_lib" LongName="xpprof64.lib" Name="xpprof64.lib" />
-                            <File Id="fil_nidmgr64_lib" LongName="nidmgr64.lib" Name="nidmgr64.lib" />
                         </Component>
                         <?ifndef NoCygwin?>
                         <Component Win64="$(var.Win64)" Id="cmp_dirlib_amd64_cygwin" Guid="ADD0E819-5F44-4236-BA2C-D3F8B438F972" DiskId="1">
