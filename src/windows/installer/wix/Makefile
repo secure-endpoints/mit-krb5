@@ -2,10 +2,14 @@
 # Build language
 LANG=1033
 
-# Program macros
-CANDLE=candle -nologo
+!IF !DEFINED(WIX)
+WIX=c:\tools\wix.2.0.5325
+!ENDIF
 
-LIGHT=light -nologo
+# Program macros
+CANDLE=$(WIX)\candle -nologo
+
+LIGHT=$(WIX)\light -nologo
 
 CD=cd
 
@@ -70,11 +74,11 @@ $(CUSTOMDLL): custom\custom.cpp
 	$(CD) ..
 
 clean:
-	$(RM) $(OBJFILE)
-	$(RM) $(MSIFILE)
+	-$(RM) $(OBJFILE)
+	-$(RM) $(MSIFILE)
 !IF ("$(CPU)" == "i386")
-	$(RM) $(WOW64_OBJFILE)
-	$(RM) $(WOW64_MSIFILE)
+	-$(RM) $(WOW64_OBJFILE)
+	-$(RM) $(WOW64_MSIFILE)
 !ENDIF
 	$(CD) custom
 	$(MAKE) -f custom.cpp clean
